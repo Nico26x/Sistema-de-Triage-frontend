@@ -11,7 +11,6 @@ export interface RegisterRequest {
   email: string;
   identificacion: string;
   password: string;
-  rol: RolNombre;
 }
 
 export interface AuthResponse {
