@@ -42,4 +42,13 @@ export class DashboardHomeComponent implements OnInit {
   goToSolicitudes(): void {
     this.router.navigate(['/dashboard/solicitudes']);
   }
+
+  goToUsuarios(): void {
+    this.router.navigate(['/dashboard/usuarios']);
+  }
+
+  logout(): void {
+    localStorage.clear();
+    this.router.navigate(['/login']);
+  }
 }

@@ -1,64 +1,303 @@
-<div class="dashboard-container">
-  
-  <!-- Sección Solicitudes (todos los roles) -->
-  <div class="dashboard-section solicitudes-card">
-    <div class="solicitudes-header">
-      <span class="solicitudes-icon">📋</span>
-      <h2>Solicitudes</h2>
-    </div>
-    <p class="solicitudes-description">Gestiona y consulta las solicitudes del sistema.</p>
-    <button class="btn-solicitudes" (click)="goToSolicitudes()">Entrar</button>
-  </div>
+<div class="dashboard-wrapper">
 
-  <!-- ESTUDIANTE Dashboard -->
-  <ng-container *ngIf="isStudentRole()">
-    <div class="dashboard-section">
-      <h1>Bienvenida Estudiante</h1>
-      <p>Email: {{ userEmail }}</p>
-      <p>Rol: {{ userRole }}</p>
-    </div>
 
-    <div class="dashboard-section">
-      <h2>Mis Solicitudes</h2>
-      <p>Aquí aparecerán tus solicitudes académicas.</p>
-      <p>(Sección placeholder - funcionalidad en desarrollo)</p>
-    </div>
-  </ng-container>
 
-  <!-- ADMINISTRATIVO Dashboard -->
-  <ng-container *ngIf="isAdminRole()">
-    <div class="dashboard-section">
-      <h1>Bienvenida Administrativo</h1>
-      <p>Email: {{ userEmail }}</p>
-      <p>Rol: {{ userRole }}</p>
-    </div>
+  <!-- ===== MAIN ===== -->
+  <main class="main-content">
 
-    <div class="dashboard-section">
-      <h2>Gestión de Triages</h2>
-      <p>Aquí se gestionarán los triages de solicitudes.</p>
-      <p>(Sección placeholder - funcionalidad en desarrollo)</p>
-    </div>
-  </ng-container>
+    <!-- ===== ESTUDIANTE ===== -->
+    <ng-container *ngIf="isStudentRole()">
 
-  <!-- COORDINADOR Dashboard -->
-  <ng-container *ngIf="isCoordinatorRole()">
-    <div class="dashboard-section">
-      <h1>Bienvenida Coordinador</h1>
-      <p>Email: {{ userEmail }}</p>
-      <p>Rol: {{ userRole }}</p>
-    </div>
+      <div class="welcome-bar">
+        <div>
+          <h1>Bienvenido 👋</h1>
+          <p>Gestiona tus solicitudes académicas desde aquí.</p>
+        </div>
+        <button class="btn-primary" (click)="goToSolicitudes()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          Nueva solicitud
+        </button>
+      </div>
 
-    <div class="dashboard-section">
-      <h2>Administración</h2>
-      <p>Acceso a herramientas administrativas del sistema.</p>
-      <p>(Sección placeholder - funcionalidad en desarrollo)</p>
-    </div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-icon">📋</span>
+          <span class="stat-label">Mis solicitudes</span>
+          <span class="stat-value">—</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">🔄</span>
+          <span class="stat-label">En atención</span>
+          <span class="stat-value accent-blue">—</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">✅</span>
+          <span class="stat-label">Atendidas</span>
+          <span class="stat-value accent-green">—</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">🗃️</span>
+          <span class="stat-label">Cerradas</span>
+          <span class="stat-value accent-gray">—</span>
+        </div>
+      </div>
 
-    <div class="dashboard-section">
-      <h2>Usuarios</h2>
-      <p>Gestión de usuarios del sistema.</p>
-      <p>(Sección placeholder - funcionalidad en desarrollo)</p>
-    </div>
-  </ng-container>
+      <div class="section-card">
+        <div class="section-header">
+          <h2>Mis solicitudes recientes</h2>
+          <button class="btn-outline" (click)="goToSolicitudes()">Ver todas</button>
+        </div>
+        <div class="empty-state">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#d1d5db"
+               stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="9" y1="13" x2="15" y2="13"/>
+            <line x1="9" y1="17" x2="12" y2="17"/>
+          </svg>
+          <p>No tienes solicitudes registradas aún.</p>
+          <button class="btn-primary" (click)="goToSolicitudes()">Crear primera solicitud</button>
+        </div>
+      </div>
 
+    </ng-container>
+
+    <!-- ===== ADMINISTRATIVO ===== -->
+    <ng-container *ngIf="isAdminRole()">
+
+      <div class="welcome-bar">
+        <div>
+          <h1>Panel Administrativo</h1>
+          <p>Clasifica, prioriza y gestiona las solicitudes entrantes.</p>
+        </div>
+        <button class="btn-primary" (click)="goToSolicitudes()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <path d="M3 9h18M9 21V9"/>
+          </svg>
+          Gestionar solicitudes
+        </button>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-icon">📥</span>
+          <span class="stat-label">Registradas</span>
+          <span class="stat-value accent-orange">—</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">🔄</span>
+          <span class="stat-label">En atención</span>
+          <span class="stat-value accent-blue">—</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">🚨</span>
+          <span class="stat-label">Críticas</span>
+          <span class="stat-value accent-red">—</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">✅</span>
+          <span class="stat-label">Atendidas hoy</span>
+          <span class="stat-value accent-green">—</span>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="section-card">
+          <div class="section-header">
+            <h2>Acciones rápidas</h2>
+          </div>
+          <div class="action-list">
+            <button class="action-item" (click)="goToSolicitudes()">
+              <span class="action-icon">📋</span>
+              <div>
+                <span class="action-title">Ver solicitudes activas</span>
+                <span class="action-sub">Clasifica y prioriza las pendientes</span>
+              </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af"
+                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"/>
+              </svg>
+            </button>
+            <button class="action-item" (click)="goToSolicitudes()">
+              <span class="action-icon">⚡</span>
+              <div>
+                <span class="action-title">Solicitudes críticas</span>
+                <span class="action-sub">Revisión inmediata requerida</span>
+              </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af"
+                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"/>
+              </svg>
+            </button>
+            <button class="action-item" (click)="goToSolicitudes()">
+              <span class="action-icon">🕐</span>
+              <div>
+                <span class="action-title">Historial de acciones</span>
+                <span class="action-sub">Revisar cambios recientes</span>
+              </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af"
+                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="section-header">
+            <h2>Estados del sistema</h2>
+          </div>
+          <div class="status-list">
+            <div class="status-row">
+              <span class="badge estado-registrada">Registrada</span>
+              <span class="status-desc">Pendiente de clasificación</span>
+            </div>
+            <div class="status-row">
+              <span class="badge estado-clasificada">Clasificada</span>
+              <span class="status-desc">Tipo y prioridad asignados</span>
+            </div>
+            <div class="status-row">
+              <span class="badge estado-en_atencion">En atención</span>
+              <span class="status-desc">Responsable asignado</span>
+            </div>
+            <div class="status-row">
+              <span class="badge estado-atendida">Atendida</span>
+              <span class="status-desc">Respuesta entregada</span>
+            </div>
+            <div class="status-row">
+              <span class="badge estado-cerrada">Cerrada</span>
+              <span class="status-desc">Proceso completado</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </ng-container>
+
+    <!-- ===== COORDINADOR ===== -->
+    <ng-container *ngIf="isCoordinatorRole()">
+
+      <div class="welcome-bar">
+        <div>
+          <h1>Panel de Coordinación</h1>
+          <p>Supervisión general del sistema de solicitudes académicas.</p>
+        </div>
+        <button class="btn-outline" (click)="goToSolicitudes()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <path d="M3 9h18M9 21V9"/>
+          </svg>
+          Ver todas las solicitudes
+        </button>
+      </div>
+
+      <div class="stats-grid stats-grid-5">
+        <div class="stat-card">
+          <span class="stat-icon">📊</span>
+          <span class="stat-label">Total</span>
+          <span class="stat-value">—</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">📥</span>
+          <span class="stat-label">Registradas</span>
+          <span class="stat-value accent-orange">—</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">🔄</span>
+          <span class="stat-label">En atención</span>
+          <span class="stat-value accent-blue">—</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">✅</span>
+          <span class="stat-label">Atendidas</span>
+          <span class="stat-value accent-green">—</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">🚨</span>
+          <span class="stat-label">Críticas</span>
+          <span class="stat-value accent-red">—</span>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="section-card">
+          <div class="section-header"><h2>Acceso rápido</h2></div>
+          <div class="action-list">
+            <button class="action-item" (click)="goToSolicitudes()">
+              <span class="action-icon">📋</span>
+              <div>
+                <span class="action-title">Todas las solicitudes</span>
+                <span class="action-sub">Vista global del sistema</span>
+              </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af"
+                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"/>
+              </svg>
+            </button>
+            <button class="action-item" (click)="goToUsuarios()">
+              <span class="action-icon">👥</span>
+              <div>
+                <span class="action-title">Gestión de usuarios</span>
+                <span class="action-sub">Administrar estudiantes y personal</span>
+              </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af"
+                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"/>
+              </svg>
+            </button>
+            <button class="action-item" (click)="goToSolicitudes()">
+              <span class="action-icon">🚨</span>
+              <div>
+                <span class="action-title">Solicitudes críticas</span>
+                <span class="action-sub">Requieren atención inmediata</span>
+              </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af"
+                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="section-header"><h2>Distribución por tipo</h2></div>
+          <div class="tipo-list">
+            <div class="tipo-row">
+              <span class="tipo-nombre">Homologación</span>
+              <div class="tipo-bar-wrap"><div class="tipo-bar" style="width: 0%"></div></div>
+              <span class="tipo-count">—</span>
+            </div>
+            <div class="tipo-row">
+              <span class="tipo-nombre">Solicitud cupo</span>
+              <div class="tipo-bar-wrap"><div class="tipo-bar" style="width: 0%"></div></div>
+              <span class="tipo-count">—</span>
+            </div>
+            <div class="tipo-row">
+              <span class="tipo-nombre">Cancelación</span>
+              <div class="tipo-bar-wrap"><div class="tipo-bar" style="width: 0%"></div></div>
+              <span class="tipo-count">—</span>
+            </div>
+            <div class="tipo-row">
+              <span class="tipo-nombre">Registro asig.</span>
+              <div class="tipo-bar-wrap"><div class="tipo-bar" style="width: 0%"></div></div>
+              <span class="tipo-count">—</span>
+            </div>
+            <div class="tipo-row">
+              <span class="tipo-nombre">Consulta</span>
+              <div class="tipo-bar-wrap"><div class="tipo-bar" style="width: 0%"></div></div>
+              <span class="tipo-count">—</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </ng-container>
+
+  </main>
 </div>

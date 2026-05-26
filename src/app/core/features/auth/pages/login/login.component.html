@@ -3,15 +3,7 @@
   <!-- Header -->
   <div class="login-header">
     <div class="login-logo">
-      <svg viewBox="0 0 80 88" width="60" height="66" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M40 4 L74 16 L74 44 C74 63 58 78 40 84 C22 78 6 63 6 44 L6 16 Z" fill="#2e7d52"/>
-        <path d="M40 10 L68 20 L68 44 C68 60 54 73 40 79 C26 73 12 60 12 44 L12 20 Z" fill="#256644"/>
-        <line x1="40" y1="22" x2="40" y2="66" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-        <line x1="18" y1="44" x2="62" y2="44" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-        <circle cx="40" cy="34" r="7" fill="none" stroke="white" stroke-width="1.8"/>
-        <circle cx="40" cy="34" r="2.5" fill="white"/>
-        <path d="M30 55 Q35 50 40 55 Q45 50 50 55" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
+      <img src="logo-uniquindio.png">
     </div>
     <p class="login-eyebrow">Portal Académico</p>
     <h1>Solicitudes Académicas</h1>
@@ -24,38 +16,25 @@
     <div class="field-group">
       <label for="email">Correo institucional</label>
       <div class="input-wrapper">
-        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="2" y="4" width="20" height="16" rx="2"/>
-          <path d="M2 7l10 7 10-7"/>
+        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+          stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="4" width="20" height="16" rx="2" />
+          <path d="M2 7l10 7 10-7" />
         </svg>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          [(ngModel)]="email"
-          required
-          placeholder="correo@universidad.edu.co"
-        />
+        <input id="email" name="email" type="email" [(ngModel)]="email" required
+          placeholder="correo@universidad.edu.co" />
       </div>
     </div>
 
     <div class="field-group">
       <label for="password">Contraseña</label>
       <div class="input-wrapper">
-        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="5" y="11" width="14" height="10" rx="2"/>
-          <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+          stroke-linecap="round" stroke-linejoin="round">
+          <rect x="5" y="11" width="14" height="10" rx="2" />
+          <path d="M8 11V7a4 4 0 0 1 8 0v4" />
         </svg>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          [(ngModel)]="password"
-          required
-          placeholder="••••••••"
-        />
+        <input id="password" name="password" type="password" [(ngModel)]="password" required placeholder="••••••••" />
       </div>
     </div>
 
@@ -78,7 +57,7 @@
 
 
   @if (error) {
-    <p class="error-message">{{ error }}</p>
+  <p class="error-message">{{ error }}</p>
   }
 
 </div>
