@@ -1,1 +1,54 @@
-<p>dashboard works</p>
+<div class="dashboard-container">
+  
+  <!-- ESTUDIANTE Dashboard -->
+  <ng-container *ngIf="isStudentRole()">
+    <div class="dashboard-section">
+      <h1>Bienvenida Estudiante</h1>
+      <p>Email: {{ userEmail }}</p>
+      <p>Rol: {{ userRole }}</p>
+    </div>
+
+    <div class="dashboard-section">
+      <h2>Mis Solicitudes</h2>
+      <p>Aquí aparecerán tus solicitudes académicas.</p>
+      <p>(Sección placeholder - funcionalidad en desarrollo)</p>
+    </div>
+  </ng-container>
+
+  <!-- ADMINISTRATIVO Dashboard -->
+  <ng-container *ngIf="isAdminRole()">
+    <div class="dashboard-section">
+      <h1>Bienvenida Administrativo</h1>
+      <p>Email: {{ userEmail }}</p>
+      <p>Rol: {{ userRole }}</p>
+    </div>
+
+    <div class="dashboard-section">
+      <h2>Gestión de Triages</h2>
+      <p>Aquí se gestionarán los triages de solicitudes.</p>
+      <p>(Sección placeholder - funcionalidad en desarrollo)</p>
+    </div>
+  </ng-container>
+
+  <!-- COORDINADOR Dashboard -->
+  <ng-container *ngIf="isCoordinatorRole()">
+    <div class="dashboard-section">
+      <h1>Bienvenida Coordinador</h1>
+      <p>Email: {{ userEmail }}</p>
+      <p>Rol: {{ userRole }}</p>
+    </div>
+
+    <div class="dashboard-section">
+      <h2>Administración</h2>
+      <p>Acceso a herramientas administrativas del sistema.</p>
+      <p>(Sección placeholder - funcionalidad en desarrollo)</p>
+    </div>
+
+    <div class="dashboard-section">
+      <h2>Usuarios</h2>
+      <p>Gestión de usuarios del sistema.</p>
+      <p>(Sección placeholder - funcionalidad en desarrollo)</p>
+    </div>
+  </ng-container>
+
+</div>

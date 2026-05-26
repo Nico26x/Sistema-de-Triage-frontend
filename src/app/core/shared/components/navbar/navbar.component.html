@@ -1,0 +1,33 @@
+<nav aria-label="Main navigation">
+  <div class="navbar-container">
+    
+    <!-- Logo / Brand -->
+    <div class="navbar-brand">
+      <h2 aria-label="Triage System">Triage System</h2>
+    </div>
+
+    <!-- Main Navigation Menu -->
+    <div class="navbar-menu" role="menubar">
+      <a routerLink="/dashboard" class="nav-link" role="menuitem" title="Go to Dashboard">Dashboard</a>
+
+      <!-- Admin-only links -->
+      <a *ngIf="isAdminRole()" routerLink="/dashboard/triages" class="nav-link" role="menuitem" title="Manage triages">Gestión de Triages</a>
+
+      <!-- Coordinator-only links -->
+      <ng-container *ngIf="isCoordinatorRole()">
+        <a routerLink="/dashboard/administration" class="nav-link" role="menuitem" title="Administration tools">Administración</a>
+        <a routerLink="/dashboard/usuarios" class="nav-link" role="menuitem" title="Manage users">Usuarios</a>
+      </ng-container>
+    </div>
+
+    <!-- User Info & Logout Section -->
+    <div class="navbar-right">
+      <span class="user-email" *ngIf="userEmail" aria-label="User email">{{ userEmail }}</span>
+      <span class="user-role" *ngIf="currentRole" aria-label="User role">({{ currentRole }})</span>
+      <button class="btn-logout" (click)="logout()" type="button" title="Sign out" aria-label="Logout button">
+        Logout
+      </button>
+    </div>
+
+  </div>
+</nav>

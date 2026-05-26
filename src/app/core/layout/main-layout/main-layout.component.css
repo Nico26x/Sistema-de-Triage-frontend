@@ -1,0 +1,23 @@
+/* ===== Main Layout Structure ===== */
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Navbar fixed positioning adjustment */
+main {
+  flex: 1;
+  margin-top: 64px;
+  width: 100%;
+  background: #f9fafb;
+  overflow-y: auto;
+}
+
+/* ===== Responsive Layout ===== */
+@media (max-width: 768px) {
+  main {
+    margin-top: calc(64px + 20px);
+  }
+}
