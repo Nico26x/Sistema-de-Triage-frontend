@@ -55,6 +55,51 @@ p {
   line-height: 1.5;
 }
 
+/* ===== Solicitudes Section ===== */
+.solicitudes-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.solicitudes-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.solicitudes-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.solicitudes-description {
+  margin: 0;
+}
+
+.btn-solicitudes {
+  background: var(--color-primary);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+  align-self: flex-start;
+}
+
+.btn-solicitudes:hover {
+  background: #256644;
+  box-shadow: 0 4px 16px rgba(46, 125, 82, 0.3);
+  transform: translateY(-1px);
+}
+
+.btn-solicitudes:active {
+  transform: translateY(1px);
+}
+
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
   .dashboard-container {

@@ -1,0 +1,59 @@
+:host {
+  font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+}
+
+.placeholder-container {
+  padding: 48px 32px;
+  max-width: 600px;
+  margin: 80px auto 0;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.placeholder-icon {
+  font-size: 5rem;
+  line-height: 1;
+}
+
+.placeholder-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #2e7d52;
+  margin: 0;
+}
+
+.placeholder-desc {
+  font-size: 1.1rem;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.placeholder-note {
+  font-size: 0.95rem;
+  color: #9ca3af;
+  margin: 12px 0 0 0;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .placeholder-container {
+    padding: 32px 16px;
+    margin-top: 60px;
+  }
+
+  .placeholder-icon {
+    font-size: 3.5rem;
+  }
+
+  .placeholder-title {
+    font-size: 1.4rem;
+  }
+
+  .placeholder-desc {
+    font-size: 1rem;
+  }
+}

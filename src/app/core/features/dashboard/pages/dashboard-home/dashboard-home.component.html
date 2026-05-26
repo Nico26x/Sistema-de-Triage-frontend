@@ -1,5 +1,15 @@
 <div class="dashboard-container">
   
+  <!-- Sección Solicitudes (todos los roles) -->
+  <div class="dashboard-section solicitudes-card">
+    <div class="solicitudes-header">
+      <span class="solicitudes-icon">📋</span>
+      <h2>Solicitudes</h2>
+    </div>
+    <p class="solicitudes-description">Gestiona y consulta las solicitudes del sistema.</p>
+    <button class="btn-solicitudes" (click)="goToSolicitudes()">Entrar</button>
+  </div>
+
   <!-- ESTUDIANTE Dashboard -->
   <ng-container *ngIf="isStudentRole()">
     <div class="dashboard-section">

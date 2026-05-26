@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { AuthService } from '../../../../services/auth.service';
 import { TokenService } from '../../../../services/token.service';
 import { RolNombre } from '../../../../models/auth.models';
@@ -17,7 +18,8 @@ export class DashboardHomeComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -35,5 +37,9 @@ export class DashboardHomeComponent implements OnInit {
 
   isCoordinatorRole(): boolean {
     return this.userRole === 'COORDINADOR';
+  }
+
+  goToSolicitudes(): void {
+    this.router.navigate(['/dashboard/solicitudes']);
   }
 }

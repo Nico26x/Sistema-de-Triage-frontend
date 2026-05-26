@@ -1,0 +1,80 @@
+<div class="solicitudes-hub-container">
+  <h1 class="hub-title">Solicitudes</h1>
+  <p class="hub-welcome" *ngIf="userRole === 'ESTUDIANTE'">Bienvenido/a. Aquí puedes gestionar tus solicitudes académicas.</p>
+  <p class="hub-welcome" *ngIf="userRole === 'ADMINISTRATIVO'">Herramientas de gestión operativa de solicitudes.</p>
+  <p class="hub-welcome" *ngIf="userRole === 'COORDINADOR'">Panel de supervisión y administración de solicitudes.</p>
+
+  <div class="hub-cards">
+    <!-- ESTUDIANTE -->
+    <ng-container *ngIf="userRole === 'ESTUDIANTE'">
+      <div class="hub-card" (click)="goTo('/dashboard/solicitudes/crear')">
+        <span class="hub-card-icon">📝</span>
+        <h2>Crear solicitud</h2>
+        <p>Inicia una nueva solicitud académica.</p>
+      </div>
+      <div class="hub-card" (click)="goTo('/dashboard/solicitudes/mis-solicitudes')">
+        <span class="hub-card-icon">📄</span>
+        <h2>Ver mis solicitudes</h2>
+        <p>Consulta el estado y detalle de tus solicitudes.</p>
+      </div>
+    </ng-container>
+
+    <!-- ADMINISTRATIVO -->
+    <ng-container *ngIf="userRole === 'ADMINISTRATIVO'">
+      <div class="hub-card" (click)="goTo('/dashboard/solicitudes/pendientes')">
+        <span class="hub-card-icon">⏳</span>
+        <h2>Solicitudes pendientes</h2>
+        <p>Revisa y gestiona solicitudes en espera.</p>
+      </div>
+      <div class="hub-card" (click)="goTo('/dashboard/solicitudes/gestion')">
+        <span class="hub-card-icon">🗂️</span>
+        <h2>Gestionar solicitudes</h2>
+        <p>Accede a todas las solicitudes para su gestión.</p>
+      </div>
+      <div class="hub-card" (click)="goTo('/dashboard/solicitudes/cambiar-estado')">
+        <span class="hub-card-icon">🔄</span>
+        <h2>Cambiar estados</h2>
+        <p>Actualiza el estado de las solicitudes.</p>
+      </div>
+      <div class="hub-card" (click)="goTo('/dashboard/solicitudes/prioridades')">
+        <span class="hub-card-icon">⭐</span>
+        <h2>Prioridades</h2>
+        <p>Gestiona prioridades de atención.</p>
+      </div>
+      <div class="hub-card" (click)="goTo('/dashboard/solicitudes/historial')">
+        <span class="hub-card-icon">📜</span>
+        <h2>Historial</h2>
+        <p>Consulta el historial de cambios.</p>
+      </div>
+    </ng-container>
+
+    <!-- COORDINADOR -->
+    <ng-container *ngIf="userRole === 'COORDINADOR'">
+      <div class="hub-card" (click)="goTo('/dashboard/solicitudes/gestion-general')">
+        <span class="hub-card-icon">🗃️</span>
+        <h2>Gestión general</h2>
+        <p>Supervisa y administra todas las solicitudes.</p>
+      </div>
+      <div class="hub-card" (click)="goTo('/dashboard/solicitudes/estadisticas')">
+        <span class="hub-card-icon">📊</span>
+        <h2>Estadísticas</h2>
+        <p>Visualiza métricas y reportes.</p>
+      </div>
+      <div class="hub-card" (click)="goTo('/dashboard/solicitudes/supervision')">
+        <span class="hub-card-icon">🕵️‍♂️</span>
+        <h2>Supervisión</h2>
+        <p>Monitorea el flujo de solicitudes.</p>
+      </div>
+      <div class="hub-card" (click)="goTo('/dashboard/solicitudes/usuarios')">
+        <span class="hub-card-icon">👥</span>
+        <h2>Usuarios</h2>
+        <p>Gestiona usuarios del sistema.</p>
+      </div>
+      <div class="hub-card" (click)="goTo('/dashboard/solicitudes/administracion')">
+        <span class="hub-card-icon">⚙️</span>
+        <h2>Administración</h2>
+        <p>Configuraciones avanzadas.</p>
+      </div>
+    </ng-container>
+  </div>
+</div>

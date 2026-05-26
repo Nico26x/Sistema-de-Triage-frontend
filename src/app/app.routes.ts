@@ -12,6 +12,11 @@ export const routes: Routes = [
     loadChildren: () => import('./core/features/dashboard/dashboard.routes').then(m => m.DASHBOARD_ROUTES)
   },
   {
+    path: 'dashboard/solicitudes',
+    canActivate: [authGuard],
+    loadChildren: () => import('./core/features/solicitudes/solicitud.routes').then(m => m.SOLICITUDES_ROUTES)
+  },
+  {
     path: 'forbidden',
     loadComponent: () => import('./core/features/forbidden/forbidden/forbidden.component').then(m => m.ForbiddenComponent)
   },

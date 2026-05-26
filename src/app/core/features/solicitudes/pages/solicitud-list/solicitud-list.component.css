@@ -1,0 +1,167 @@
+/* ===== Design System ===== */
+:host {
+  font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  --color-primary: #2e7d52;
+  --color-text: #1a1a1a;
+  --color-text-secondary: #6b7280;
+  --color-border: #e5e7eb;
+  --color-bg-light: #f9fafb;
+  --color-disabled: #d1d5db;
+}
+
+/* ===== Container ===== */
+.solicitud-container {
+  padding: 32px 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ===== Page Header ===== */
+.page-header {
+  margin-bottom: 40px;
+}
+
+.page-header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 0;
+  letter-spacing: -0.3px;
+}
+
+/* ===== Placeholder Section ===== */
+.placeholder-section {
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  padding: 48px 32px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 20px;
+}
+
+.icon-large {
+  font-size: 4rem;
+  line-height: 1;
+  margin-bottom: 12px;
+}
+
+.placeholder-section h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0;
+  max-width: 500px;
+  letter-spacing: -0.2px;
+}
+
+.placeholder-text {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+  line-height: 1.6;
+  max-width: 550px;
+}
+
+/* ===== Action Buttons ===== */
+.action-buttons {
+  display: flex;
+  gap: 16px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btn-action {
+  background: var(--color-primary);
+  color: white;
+  padding: 14px 24px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: not-allowed;
+  opacity: 0.5;
+  transition: all 0.2s ease;
+}
+
+.btn-action:disabled {
+  background: var(--color-primary);
+  box-shadow: none;
+  transform: none;
+}
+
+.btn-action[title] {
+  position: relative;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .solicitud-container {
+    padding: 20px 16px;
+  }
+
+  .page-header {
+    margin-bottom: 28px;
+  }
+
+  .page-header h1 {
+    font-size: 1.4rem;
+  }
+
+  .placeholder-section {
+    padding: 32px 20px;
+    gap: 16px;
+  }
+
+  .icon-large {
+    font-size: 3rem;
+  }
+
+  .placeholder-section h2 {
+    font-size: 1.25rem;
+  }
+
+  .placeholder-text {
+    font-size: 0.9rem;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .btn-action {
+    width: 100%;
+    padding: 12px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .solicitud-container {
+    padding: 16px 12px;
+  }
+
+  .page-header h1 {
+    font-size: 1.2rem;
+  }
+
+  .placeholder-section {
+    padding: 24px 16px;
+  }
+
+  .icon-large {
+    font-size: 2.5rem;
+  }
+
+  .placeholder-section h2 {
+    font-size: 1.1rem;
+  }
+
+  .placeholder-text {
+    font-size: 0.85rem;
+  }
+}
