@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink,RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../services/auth.service';
 import { TokenService } from '../../../services/token.service';
@@ -10,7 +10,7 @@ import { RolNombre } from '../../../models/auth.models';
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
-  imports: [CommonModule, RouterLink]
+   imports: [CommonModule, RouterLink, RouterLinkActive]
 })
 export class NavbarComponent implements OnInit {
   currentRole: RolNombre | null = null;

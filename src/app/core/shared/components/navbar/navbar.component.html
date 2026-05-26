@@ -1,31 +1,85 @@
 <nav aria-label="Main navigation">
   <div class="navbar-container">
-    
+
     <!-- Logo / Brand -->
     <div class="navbar-brand">
-      <h2 aria-label="Triage System">Triage System</h2>
+      <img src="logo-uniquindio.png" alt="Uniquindío" class="nav-logo" />
+      <div class="nav-brand-text">
+        <span class="nav-brand-title">Portal Académico</span>
+        <span class="nav-brand-sub">Universidad del Quindío</span>
+      </div>
     </div>
 
     <!-- Main Navigation Menu -->
     <div class="navbar-menu" role="menubar">
-      <a routerLink="/dashboard" class="nav-link" role="menuitem" title="Go to Dashboard">Dashboard</a>
+      <a routerLink="/dashboard" class="nav-link" role="menuitem" routerLinkActive="nav-link--active" [routerLinkActiveOptions]="{exact:true}">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+          <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+        </svg>
+        Panel
+      </a>
 
-      <!-- Admin-only links -->
-      <a *ngIf="isAdminRole()" routerLink="/dashboard/triages" class="nav-link" role="menuitem" title="Manage triages">Gestión de Triages</a>
+      <a routerLink="/dashboard/solicitudes" class="nav-link" role="menuitem" routerLinkActive="nav-link--active">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="12" y2="17"/>
+        </svg>
+        Solicitudes
+      </a>
 
-      <!-- Coordinator-only links -->
+      <!-- Admin-only -->
+      <a *ngIf="isAdminRole()" routerLink="/dashboard/triages" class="nav-link" role="menuitem" routerLinkActive="nav-link--active">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/>
+          <polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/>
+        </svg>
+        Gestión de Triages
+      </a>
+
+      <!-- Coordinator-only -->
       <ng-container *ngIf="isCoordinatorRole()">
-        <a routerLink="/dashboard/administration" class="nav-link" role="menuitem" title="Administration tools">Administración</a>
-        <a routerLink="/dashboard/usuarios" class="nav-link" role="menuitem" title="Manage users">Usuarios</a>
+        <a routerLink="/dashboard/administration" class="nav-link" role="menuitem" routerLinkActive="nav-link--active">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/>
+          </svg>
+          Administración
+        </a>
+        <a routerLink="/dashboard/usuarios" class="nav-link" role="menuitem" routerLinkActive="nav-link--active">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+          Usuarios
+        </a>
       </ng-container>
     </div>
 
-    <!-- User Info & Logout Section -->
+    <!-- User Info & Logout -->
     <div class="navbar-right">
-      <span class="user-email" *ngIf="userEmail" aria-label="User email">{{ userEmail }}</span>
-      <span class="user-role" *ngIf="currentRole" aria-label="User role">({{ currentRole }})</span>
-      <button class="btn-logout" (click)="logout()" type="button" title="Sign out" aria-label="Logout button">
-        Logout
+      <div class="user-info" *ngIf="userEmail">
+        <span class="user-email">{{ userEmail }}</span>
+        <span class="user-role-badge"
+          [ngClass]="{
+            'badge-estudiante': currentRole === 'ESTUDIANTE',
+            'badge-admin':      currentRole === 'ADMINISTRATIVO',
+            'badge-coord':      currentRole === 'COORDINADOR'
+          }">
+          {{ currentRole | titlecase }}
+        </span>
+      </div>
+
+      <button class="btn-logout" (click)="logout()" type="button" aria-label="Cerrar sesión">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        Cerrar sesión
       </button>
     </div>
 
