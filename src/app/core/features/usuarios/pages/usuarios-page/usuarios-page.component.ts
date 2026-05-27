@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 import { UsuarioResponse } from '../../../../models/usuario.models';
@@ -12,10 +13,14 @@ import { UsuarioService } from '../../../../services/usuario.service';
   standalone: true,
   selector: 'app-usuarios-page',
   templateUrl: './usuarios-page.component.html',
-  imports: [CommonModule, RouterLink]
+  imports: [CommonModule, FormsModule, RouterLink]
 })
 export class UsuariosPageComponent implements OnInit {
   usuarios: UsuarioResponse[] = [];
+  usuariosFiltrados: UsuarioResponse[] = [];
+  terminoBusqueda = '';
+  filtroRol = '';
+  filtroEstado = '';
   loading = false;
   error = '';
   accionEnCurso = false;
@@ -53,11 +58,13 @@ export class UsuariosPageComponent implements OnInit {
       .subscribe({
         next: usuarios => {
           this.usuarios = usuarios ?? [];
+          this.aplicarFiltros();
           this.error = '';
           this.cdr.detectChanges();
         },
         error: (error: unknown) => {
           this.usuarios = [];
+          this.usuariosFiltrados = [];
           this.error = this.obtenerMensajeError(error);
           this.cdr.detectChanges();
         }
@@ -66,6 +73,59 @@ export class UsuariosPageComponent implements OnInit {
 
   refrescar(): void {
     this.cargarUsuarios();
+  }
+
+  aplicarFiltros(): void {
+    this.usuariosFiltrados = this.usuarios.filter(
+      usuario => this.coincideBusqueda(usuario) && this.coincideRol(usuario) && this.coincideEstado(usuario)
+    );
+
+    this.cdr.detectChanges();
+  }
+
+  limpiarFiltros(): void {
+    this.terminoBusqueda = '';
+    this.filtroRol = '';
+    this.filtroEstado = '';
+    this.aplicarFiltros();
+  }
+
+  coincideBusqueda(usuario: UsuarioResponse): boolean {
+    const termino = this.terminoBusqueda.trim().toLowerCase();
+
+    if (!termino) {
+      return true;
+    }
+
+    const nombre = usuario.nombre?.toLowerCase() ?? '';
+    const email = usuario.email?.toLowerCase() ?? '';
+    const identificacion = usuario.identificacion?.toLowerCase() ?? '';
+
+    return nombre.includes(termino) || email.includes(termino) || identificacion.includes(termino);
+  }
+
+  coincideRol(usuario: UsuarioResponse): boolean {
+    if (!this.filtroRol) {
+      return true;
+    }
+
+    return usuario.rol === this.filtroRol;
+  }
+
+  coincideEstado(usuario: UsuarioResponse): boolean {
+    if (!this.filtroEstado) {
+      return true;
+    }
+
+    if (this.filtroEstado === 'ACTIVO') {
+      return usuario.activo === true;
+    }
+
+    if (this.filtroEstado === 'INACTIVO') {
+      return usuario.activo === false;
+    }
+
+    return true;
   }
 
   puedeGestionarEstado(usuario: UsuarioResponse): boolean {
