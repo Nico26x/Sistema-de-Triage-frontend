@@ -37,6 +37,24 @@ export interface SolicitudResponse {
   estadoActual?: EstadoSolicitud;
 }
 
+export type AccionHistorial =
+  | 'REGISTRO'
+  | 'CLASIFICACION'
+  | 'PRIORIZACION'
+  | 'ASIGNACION'
+  | 'CAMBIO_ESTADO'
+  | 'CIERRE'
+  | 'OBSERVACION';
+
+export interface SolicitudHistorialResponse {
+  fechaHora?: string | null;
+  accion?: AccionHistorial | null;
+  observacion?: string | null;
+  estadoAnterior?: EstadoSolicitud | null;
+  estadoNuevo?: EstadoSolicitud | null;
+  actorId?: number | null;
+}
+
 export interface SolicitudFilter {
   estado?: EstadoSolicitud;
   prioridad?: Prioridad;

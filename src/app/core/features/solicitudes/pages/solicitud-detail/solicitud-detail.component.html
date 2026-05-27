@@ -34,4 +34,33 @@
     <p>Responsable: {{ solicitud.responsable || 'Sin responsable' }}</p>
     <p>Justificacion de prioridad: {{ solicitud.justificacionPrioridad || 'Sin justificacion' }}</p>
   </div>
+
+  <div>
+    <h2>Historial de la solicitud</h2>
+
+    <div *ngIf="loadingHistorial">
+      <p>Cargando historial...</p>
+    </div>
+
+    <div *ngIf="!loadingHistorial && errorHistorial">
+      <p>No se pudo cargar el historial</p>
+      <p>{{ errorHistorial }}</p>
+      <button type="button" (click)="actualizarHistorial()">Reintentar historial</button>
+    </div>
+
+    <div *ngIf="!loadingHistorial && !errorHistorial && historial.length === 0">
+      <p>No hay movimientos registrados en el historial.</p>
+    </div>
+
+    <div *ngIf="!loadingHistorial && !errorHistorial && historial.length > 0">
+      <div *ngFor="let item of historial">
+        <p>Fecha: {{ item.fechaHora || 'Sin fecha' }}</p>
+        <p>Accion: {{ item.accion || 'Sin accion' }}</p>
+        <p>Estado anterior: {{ item.estadoAnterior || 'Sin estado anterior' }}</p>
+        <p>Estado nuevo: {{ item.estadoNuevo || 'Sin estado nuevo' }}</p>
+        <p>Actor ID: {{ item.actorId || 'Sin actor' }}</p>
+        <p>Observacion: {{ item.observacion || 'Sin observacion' }}</p>
+      </div>
+    </div>
+  </div>
 </div>

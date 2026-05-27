@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { finalize } from 'rxjs';
 import { SolicitudService } from '../../../../services/solicitud.service';
-import { SolicitudResponse } from '../../../../models/solicitud.models';
+import { SolicitudHistorialResponse, SolicitudResponse } from '../../../../models/solicitud.models';
 
 @Component({
   standalone: true,
@@ -19,14 +19,18 @@ export class SolicitudDetailComponent implements OnInit {
   private cdr = inject(ChangeDetectorRef);
 
   solicitud: SolicitudResponse | null = null;
+  historial: SolicitudHistorialResponse[] = [];
   loading = false;
   error = '';
+  loadingHistorial = false;
+  errorHistorial = '';
   private solicitudId: number | null = null;
 
   ngOnInit(): void {
     this.leerIdRuta();
     if (this.solicitudId !== null) {
       this.cargarDetalle();
+      this.cargarHistorial();
     }
   }
 
@@ -65,6 +69,49 @@ export class SolicitudDetailComponent implements OnInit {
 
   actualizarDetalle(): void {
     this.cargarDetalle();
+  }
+
+  cargarHistorial(): void {
+    if (this.solicitudId === null) {
+      this.errorHistorial = 'El identificador de solicitud no es valido para consultar el historial.';
+      this.historial = [];
+      this.cdr.detectChanges();
+      return;
+    }
+
+    this.loadingHistorial = true;
+    this.errorHistorial = '';
+
+    this.solicitudService
+      .obtenerHistorialSolicitud(this.solicitudId)
+      .pipe(
+        finalize(() => {
+          this.loadingHistorial = false;
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe({
+        next: response => {
+          if (!Array.isArray(response)) {
+            this.historial = [];
+            this.errorHistorial = 'La respuesta del historial no tiene el formato esperado.';
+            this.cdr.detectChanges();
+            return;
+          }
+
+          this.historial = response;
+          this.cdr.detectChanges();
+        },
+        error: (error: unknown) => {
+          this.historial = [];
+          this.errorHistorial = this.obtenerMensajeErrorHistorial(error);
+          this.cdr.detectChanges();
+        }
+      });
+  }
+
+  actualizarHistorial(): void {
+    this.cargarHistorial();
   }
 
   volverAMisSolicitudes(): void {
@@ -109,5 +156,29 @@ export class SolicitudDetailComponent implements OnInit {
     }
 
     return 'No fue posible cargar el detalle de la solicitud.';
+  }
+
+  private obtenerMensajeErrorHistorial(error: unknown): string {
+    if (!(error instanceof HttpErrorResponse)) {
+      return 'No fue posible cargar el historial de la solicitud.';
+    }
+
+    if (error.status === 0) {
+      return 'No se pudo conectar con el backend.';
+    }
+
+    if (error.status === 401 || error.status === 403) {
+      return 'Tu sesion expiro o no tienes permisos para ver el historial.';
+    }
+
+    if (error.status === 404) {
+      return 'No se encontro el historial de esta solicitud.';
+    }
+
+    if (error.status >= 500) {
+      return 'El servidor tuvo un problema al consultar el historial.';
+    }
+
+    return 'No fue posible cargar el historial de la solicitud.';
   }
 }
