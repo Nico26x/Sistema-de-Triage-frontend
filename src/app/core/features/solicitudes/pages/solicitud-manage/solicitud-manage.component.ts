@@ -6,7 +6,9 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { finalize, timeout } from 'rxjs';
 import { CanalOrigen, EstadoSolicitud, Prioridad, TipoSolicitudNombre } from '../../../../models/enums.models';
 import { SolicitudFiltros, SolicitudResponse } from '../../../../models/solicitud.models';
+import { UsuarioResponse } from '../../../../models/usuario.models';
 import { SolicitudService } from '../../../../services/solicitud.service';
+import { UsuarioService } from '../../../../services/usuario.service';
 
 @Component({
   standalone: true,
@@ -16,11 +18,14 @@ import { SolicitudService } from '../../../../services/solicitud.service';
 })
 export class SolicitudManageComponent implements OnInit {
   private solicitudService = inject(SolicitudService);
+  private usuarioService = inject(UsuarioService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private cdr = inject(ChangeDetectorRef);
 
   solicitudes: SolicitudResponse[] = [];
+  responsables: UsuarioResponse[] = [];
+  responsablesFiltrados: UsuarioResponse[] = [];
   loading = false;
   error = '';
   filtrosAplicados = false;
@@ -30,6 +35,7 @@ export class SolicitudManageComponent implements OnInit {
     prioridad: '',
     tipoSolicitud: '',
     canalOrigen: '',
+    responsableId: '',
     desde: '',
     hasta: ''
   };
@@ -47,14 +53,18 @@ export class SolicitudManageComponent implements OnInit {
   canales: CanalOrigen[] = ['CSU', 'CORREO', 'SAC', 'TELEFONICO', 'PRESENCIAL'];
 
   ngOnInit(): void {
+    this.cargarResponsables();
+
     this.route.queryParamMap.subscribe(params => {
       const estado = params.get('estado');
+      const responsableId = params.get('responsableId');
 
       this.filtros = {
         estado: '',
         prioridad: '',
         tipoSolicitud: '',
         canalOrigen: '',
+        responsableId: '',
         desde: '',
         hasta: ''
       };
@@ -63,10 +73,31 @@ export class SolicitudManageComponent implements OnInit {
         this.filtros.estado = estado;
       }
 
+      if (responsableId?.trim()) {
+        this.filtros.responsableId = responsableId;
+      }
+
       this.filtrosAplicados = this.hayFiltrosActivos();
       const filtrosApi = this.construirFiltrosParaApi();
       this.cargarSolicitudes(filtrosApi);
       this.cdr.detectChanges();
+    });
+  }
+
+  cargarResponsables(): void {
+    this.usuarioService.listarResponsables().subscribe({
+      next: responsables => {
+        this.responsables = Array.isArray(responsables) ? responsables : [];
+        this.responsablesFiltrados = this.responsables.filter(
+          usuario => usuario.activo === true && (usuario.rol === 'ADMINISTRATIVO' || usuario.rol === 'COORDINADOR')
+        );
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.responsables = [];
+        this.responsablesFiltrados = [];
+        this.cdr.detectChanges();
+      }
     });
   }
 
@@ -147,6 +178,7 @@ export class SolicitudManageComponent implements OnInit {
     const prioridad = this.filtros.prioridad?.trim() ?? '';
     const tipoSolicitud = this.filtros.tipoSolicitud?.trim() ?? '';
     const canalOrigen = this.filtros.canalOrigen?.trim() ?? '';
+    const responsableId = this.filtros.responsableId;
     const desde = this.normalizarFechaDesde(this.filtros.desde);
     const hasta = this.normalizarFechaHasta(this.filtros.hasta);
 
@@ -155,6 +187,9 @@ export class SolicitudManageComponent implements OnInit {
       ...(prioridad ? { prioridad: prioridad as Prioridad } : {}),
       ...(tipoSolicitud ? { tipoSolicitud: tipoSolicitud as TipoSolicitudNombre } : {}),
       ...(canalOrigen ? { canalOrigen: canalOrigen as CanalOrigen } : {}),
+      ...(responsableId !== undefined && responsableId !== null && responsableId !== ''
+        ? { responsableId }
+        : {}),
       ...(desde ? { desde } : {}),
       ...(hasta ? { hasta } : {})
     };
@@ -190,6 +225,7 @@ export class SolicitudManageComponent implements OnInit {
       this.filtros.prioridad ||
       this.filtros.tipoSolicitud ||
       this.filtros.canalOrigen ||
+      this.filtros.responsableId ||
       this.filtros.desde ||
       this.filtros.hasta
     );

@@ -27,6 +27,10 @@ export class SolicitudService {
       params = params.set('canalOrigen', filtros.canalOrigen);
     }
 
+    if (filtros?.responsableId !== undefined && filtros.responsableId !== null && filtros.responsableId !== '') {
+      params = params.set('responsableId', String(filtros.responsableId));
+    }
+
     if (filtros?.desde) {
       params = params.set('desde', filtros.desde);
     }
