@@ -13,6 +13,7 @@ import { CambiarEstadoSolicitudRequest, ClasificarSolicitudRequest, SolicitudHis
   standalone: true,
   selector: 'app-solicitud-detail',
   templateUrl: './solicitud-detail.component.html',
+  styleUrls: ['./solicitud-detail.component.css'],
   imports: [CommonModule, FormsModule]
 })
 export class SolicitudDetailComponent implements OnInit {
