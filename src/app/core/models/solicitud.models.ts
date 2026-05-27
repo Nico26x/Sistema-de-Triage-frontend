@@ -9,7 +9,7 @@ import {
 export interface SolicitudCreateRequest {
   descripcion: string;
   canal: CanalOrigen;
-  solicitanteId?: number;
+  solicitanteId?: number | null;
   impacto: ImpactoAcademico;
   fechaLimite?: string | null;
   tipo: TipoSolicitudNombre;

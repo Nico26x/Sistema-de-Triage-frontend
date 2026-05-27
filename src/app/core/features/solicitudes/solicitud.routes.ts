@@ -13,7 +13,7 @@ export const SOLICITUDES_ROUTES: Routes = [
       // ESTUDIANTE Routes
       {
         path: 'crear',
-        loadComponent: () => import('./pages/placeholder/solicitud-placeholder.component').then(m => m.SolicitudPlaceholderComponent)
+        loadComponent: () => import('./pages/solicitud-create/solicitud-create.component').then(m => m.SolicitudCreateComponent)
       },
       {
         path: 'mis-solicitudes',

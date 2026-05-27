@@ -1,0 +1,67 @@
+<div>
+  <h1>Crear solicitud</h1>
+  <p>Completa la informacion para registrar tu solicitud academica.</p>
+
+  <div *ngIf="error">
+    <p>No se pudo crear la solicitud</p>
+    <p>{{ error }}</p>
+  </div>
+
+  <div *ngIf="success">
+    <p>{{ success }}</p>
+  </div>
+
+  <form (ngSubmit)="guardar()">
+    <div>
+      <label for="descripcion">Descripcion</label>
+      <textarea
+        id="descripcion"
+        name="descripcion"
+        [(ngModel)]="descripcion"
+        rows="4"
+      ></textarea>
+    </div>
+
+    <div>
+      <label for="canal">Canal</label>
+      <select id="canal" name="canal" [(ngModel)]="canal">
+        <option value="">Selecciona un canal</option>
+        <option *ngFor="let opcion of canales" [value]="opcion">{{ opcion }}</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="impacto">Impacto</label>
+      <select id="impacto" name="impacto" [(ngModel)]="impacto">
+        <option value="">Selecciona un impacto</option>
+        <option *ngFor="let opcion of impactos" [value]="opcion">{{ opcion }}</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="tipo">Tipo</label>
+      <select id="tipo" name="tipo" [(ngModel)]="tipo">
+        <option value="">Selecciona un tipo</option>
+        <option *ngFor="let opcion of tipos" [value]="opcion">{{ opcion }}</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="fechaLimite">Fecha limite (opcional)</label>
+      <input
+        id="fechaLimite"
+        name="fechaLimite"
+        type="datetime-local"
+        [(ngModel)]="fechaLimite"
+      />
+    </div>
+
+    <div>
+      <button type="submit" [disabled]="loading">
+        {{ loading ? 'Guardando...' : 'Guardar' }}
+      </button>
+      <button type="button" (click)="volver()">Volver</button>
+      <button type="button" (click)="irAMisSolicitudes()">Ir a Mis solicitudes</button>
+    </div>
+  </form>
+</div>
