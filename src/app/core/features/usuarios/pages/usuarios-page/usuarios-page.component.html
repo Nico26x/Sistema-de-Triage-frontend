@@ -7,6 +7,8 @@
 
   <p *ngIf="loading">Cargando usuarios...</p>
   <p *ngIf="!loading && error">{{ error }}</p>
+  <p *ngIf="!loading && errorAccion">{{ errorAccion }}</p>
+  <p *ngIf="!loading && exitoAccion">{{ exitoAccion }}</p>
   <p *ngIf="!loading && !error && usuarios.length === 0">No hay usuarios registrados.</p>
 
   <table *ngIf="!loading && !error && usuarios.length > 0">
@@ -17,6 +19,7 @@
         <th>Identificacion</th>
         <th>Rol</th>
         <th>Estado</th>
+        <th>Acciones</th>
       </tr>
     </thead>
     <tbody>
@@ -27,6 +30,25 @@
         <td>{{ usuario.rol || 'Sin rol' }}</td>
         <td>
           {{ usuario.activo === true ? 'Activo' : usuario.activo === false ? 'Inactivo' : 'Sin estado' }}
+        </td>
+        <td>
+          <button
+            *ngIf="usuario.activo === true && puedeGestionarEstado(usuario)"
+            type="button"
+            (click)="desactivarUsuario(usuario)"
+            [disabled]="accionEnCurso"
+          >
+            Desactivar
+          </button>
+          <button
+            *ngIf="usuario.activo === false && puedeGestionarEstado(usuario)"
+            type="button"
+            (click)="activarUsuario(usuario)"
+            [disabled]="accionEnCurso"
+          >
+            Activar
+          </button>
+          <small *ngIf="esUsuarioAutenticado(usuario)">No puedes modificar tu propio estado</small>
         </td>
       </tr>
     </tbody>

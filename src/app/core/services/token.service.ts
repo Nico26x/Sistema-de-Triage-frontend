@@ -44,6 +44,12 @@ export class TokenService {
     return this.getPayload()?.email ?? this.getPayload()?.sub ?? null;
   }
 
+  getUserId(): number | null {
+    const payload = this.getPayload();
+    const id = payload?.usuarioId ?? payload?.userId ?? payload?.id;
+    return typeof id === 'number' ? id : null;
+  }
+
   isTokenExpired(): boolean {
     const payload = this.getPayload();
     if (!payload?.exp) return false;

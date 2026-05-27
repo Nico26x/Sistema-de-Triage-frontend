@@ -19,4 +19,12 @@ export class UsuarioService {
   crearAdministrativo(request: CrearAdministrativoRequest): Observable<UsuarioResponse> {
     return this.http.post<UsuarioResponse>(API_ENDPOINTS.usuarios.administrativo, request);
   }
+
+  activarUsuario(id: number): Observable<void> {
+    return this.http.patch<void>(API_ENDPOINTS.usuarios.activar(id), null);
+  }
+
+  desactivarUsuario(id: number): Observable<void> {
+    return this.http.patch<void>(API_ENDPOINTS.usuarios.desactivar(id), null);
+  }
 }

@@ -18,6 +18,8 @@ export const API_ENDPOINTS = {
     base: `${API_BASE_URL}/usuarios`,
     responsables: `${API_BASE_URL}/usuarios/responsables`,
     administrativo: `${API_BASE_URL}/usuarios/administrativo`,
+    activar: (id: number) => `${API_BASE_URL}/usuarios/${id}/activar`,
+    desactivar: (id: number) => `${API_BASE_URL}/usuarios/${id}/desactivar`,
   },
   ia: {
     sugerirClasificacion: `${API_BASE_URL}/ia/solicitudes/sugerir-clasificacion`,
