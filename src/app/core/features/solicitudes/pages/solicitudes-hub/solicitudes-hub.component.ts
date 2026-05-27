@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Params, Router } from '@angular/router';
 import { AuthService } from '../../../../services/auth.service';
 import { RolNombre } from '../../../../models/auth.models';
 
@@ -20,7 +20,7 @@ export class SolicitudesHubComponent implements OnInit {
     this.userRole = this.authService.getCurrentRole();
   }
 
-  goTo(path: string): void {
-    this.router.navigate([path]);
+  goTo(path: string, queryParams?: Params): void {
+    this.router.navigate([path], { queryParams });
   }
 }

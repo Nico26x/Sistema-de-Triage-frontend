@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { finalize, timeout } from 'rxjs';
 import { CanalOrigen, EstadoSolicitud, Prioridad, TipoSolicitudNombre } from '../../../../models/enums.models';
@@ -17,6 +17,7 @@ import { SolicitudService } from '../../../../services/solicitud.service';
 export class SolicitudManageComponent implements OnInit {
   private solicitudService = inject(SolicitudService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private cdr = inject(ChangeDetectorRef);
 
   solicitudes: SolicitudResponse[] = [];
@@ -46,7 +47,27 @@ export class SolicitudManageComponent implements OnInit {
   canales: CanalOrigen[] = ['CSU', 'CORREO', 'SAC', 'TELEFONICO', 'PRESENCIAL'];
 
   ngOnInit(): void {
-    this.cargarSolicitudes();
+    this.route.queryParamMap.subscribe(params => {
+      const estado = params.get('estado');
+
+      this.filtros = {
+        estado: '',
+        prioridad: '',
+        tipoSolicitud: '',
+        canalOrigen: '',
+        desde: '',
+        hasta: ''
+      };
+
+      if (this.esEstadoValido(estado)) {
+        this.filtros.estado = estado;
+      }
+
+      this.filtrosAplicados = this.hayFiltrosActivos();
+      const filtrosApi = this.construirFiltrosParaApi();
+      this.cargarSolicitudes(filtrosApi);
+      this.cdr.detectChanges();
+    });
   }
 
   cargarSolicitudes(filtros?: SolicitudFiltros): void {
@@ -102,17 +123,10 @@ export class SolicitudManageComponent implements OnInit {
   }
 
   limpiarFiltros(): void {
-    this.filtros = {
-      estado: '',
-      prioridad: '',
-      tipoSolicitud: '',
-      canalOrigen: '',
-      desde: '',
-      hasta: ''
-    };
-    this.filtrosAplicados = false;
-    this.error = '';
-    this.cargarSolicitudes();
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {}
+    });
     this.cdr.detectChanges();
   }
 
@@ -199,5 +213,15 @@ export class SolicitudManageComponent implements OnInit {
     }
 
     return 'No se pudieron cargar las solicitudes. Intenta nuevamente.';
+  }
+
+  private esEstadoValido(estado: string | null): estado is EstadoSolicitud {
+    return (
+      estado === 'REGISTRADA' ||
+      estado === 'CLASIFICADA' ||
+      estado === 'EN_ATENCION' ||
+      estado === 'ATENDIDA' ||
+      estado === 'CERRADA'
+    );
   }
 }
