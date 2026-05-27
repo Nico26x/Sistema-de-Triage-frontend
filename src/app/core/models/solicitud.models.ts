@@ -15,6 +15,23 @@ export interface SolicitudCreateRequest {
   tipo: TipoSolicitudNombre;
 }
 
+export interface SugerenciaClasificacionRequest {
+  descripcion: string;
+  impacto?: ImpactoAcademico | null;
+  fechaLimite?: string | null;
+  canal?: CanalOrigen | null;
+}
+
+export interface SugerenciaClasificacionResponse {
+  tipoSugerido?: TipoSolicitudNombre | null;
+  impactoSugerido?: ImpactoAcademico | null;
+  canalSugerido?: CanalOrigen | null;
+  prioridadSugerida?: Prioridad | null;
+  justificacion?: string | null;
+  requiereConfirmacionHumana?: boolean;
+  fuente?: string | null;
+}
+
 export interface SolicitudResponse {
   id: number;
   descripcion: string;

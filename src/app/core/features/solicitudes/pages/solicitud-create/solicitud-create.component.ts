@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { finalize } from 'rxjs';
 import { SolicitudService } from '../../../../services/solicitud.service';
-import { SolicitudCreateRequest } from '../../../../models/solicitud.models';
+import { SolicitudCreateRequest, SugerenciaClasificacionRequest, SugerenciaClasificacionResponse } from '../../../../models/solicitud.models';
 import { CanalOrigen, ImpactoAcademico, TipoSolicitudNombre } from '../../../../models/enums.models';
 
 @Component({
@@ -37,8 +37,11 @@ export class SolicitudCreateComponent {
   ];
 
   loading = false;
+  loadingIa = false;
   error = '';
+  errorIa = '';
   success = '';
+  sugerenciaIa: SugerenciaClasificacionResponse | null = null;
 
   guardar(): void {
     if (this.loading) {
@@ -96,6 +99,85 @@ export class SolicitudCreateComponent {
     this.router.navigate(['/dashboard/solicitudes/mis-solicitudes']);
   }
 
+  sugerirClasificacion(): void {
+    if (this.loadingIa) {
+      return;
+    }
+
+    this.errorIa = '';
+    const requestIa = this.construirRequestIa();
+
+    if (!requestIa) {
+      this.cdr.detectChanges();
+      return;
+    }
+
+    this.loadingIa = true;
+    this.errorIa = '';
+    this.sugerenciaIa = null;
+
+    this.solicitudService
+      .sugerirClasificacion(requestIa)
+      .pipe(
+        finalize(() => {
+          this.loadingIa = false;
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe({
+        next: response => {
+          this.sugerenciaIa = response;
+          this.cdr.detectChanges();
+        },
+        error: (error: unknown) => {
+          this.errorIa = this.obtenerMensajeErrorIa(error);
+          this.sugerenciaIa = null;
+          this.cdr.detectChanges();
+        }
+      });
+  }
+
+  aceptarSugerenciaIa(): void {
+    if (!this.sugerenciaIa) {
+      this.errorIa = 'La IA no devolvio datos aplicables para completar el formulario.';
+      this.cdr.detectChanges();
+      return;
+    }
+
+    let aplicoSugerencia = false;
+
+    if (this.sugerenciaIa.tipoSugerido) {
+      this.tipo = this.sugerenciaIa.tipoSugerido;
+      aplicoSugerencia = true;
+    }
+
+    if (this.sugerenciaIa.impactoSugerido) {
+      this.impacto = this.sugerenciaIa.impactoSugerido;
+      aplicoSugerencia = true;
+    }
+
+    if (this.sugerenciaIa.canalSugerido) {
+      this.canal = this.sugerenciaIa.canalSugerido;
+      aplicoSugerencia = true;
+    }
+
+    if (!aplicoSugerencia) {
+      this.errorIa = 'La IA no devolvio datos aplicables para completar el formulario.';
+      this.cdr.detectChanges();
+      return;
+    }
+
+    this.errorIa = '';
+    this.cdr.detectChanges();
+  }
+
+  limpiarSugerenciaIa(): void {
+    this.sugerenciaIa = null;
+    this.errorIa = '';
+    this.loadingIa = false;
+    this.cdr.detectChanges();
+  }
+
   crearOtraSolicitud(): void {
     this.descripcion = '';
     this.canal = '';
@@ -149,6 +231,17 @@ export class SolicitudCreateComponent {
     return null;
   }
 
+  private construirRequestIa(): SugerenciaClasificacionRequest | null {
+    if (!this.descripcion.trim()) {
+      this.errorIa = 'La descripcion es obligatoria para generar una sugerencia.';
+      return null;
+    }
+
+    return {
+      descripcion: this.descripcion.trim()
+    };
+  }
+
   private obtenerMensajeError(error: unknown): string {
     if (!(error instanceof HttpErrorResponse)) {
       return 'No fue posible crear la solicitud. Intenta nuevamente.';
@@ -171,5 +264,29 @@ export class SolicitudCreateComponent {
     }
 
     return 'No fue posible crear la solicitud. Revisa los datos e intenta de nuevo.';
+  }
+
+  private obtenerMensajeErrorIa(error: unknown): string {
+    if (!(error instanceof HttpErrorResponse)) {
+      return 'No fue posible obtener la sugerencia de clasificacion.';
+    }
+
+    if (error.status === 0) {
+      return 'No se pudo conectar con el backend.';
+    }
+
+    if (error.status === 400) {
+      return 'Los datos para la sugerencia no son validos. Revisa la descripcion, canal, impacto y fecha.';
+    }
+
+    if (error.status === 401 || error.status === 403) {
+      return 'Tu sesion expiro o no tienes permisos para usar la sugerencia de IA.';
+    }
+
+    if (error.status >= 500) {
+      return 'El servidor tuvo un problema al generar la sugerencia.';
+    }
+
+    return 'No fue posible obtener la sugerencia de clasificacion.';
   }
 }

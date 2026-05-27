@@ -47,6 +47,37 @@
     </div>
 
     <div>
+      <button
+        type="button"
+        (click)="sugerirClasificacion()"
+        [disabled]="loading || loadingIa || !descripcion.trim()"
+      >
+        Sugerir clasificacion con IA
+      </button>
+    </div>
+
+    <div *ngIf="loadingIa">
+      <p>Consultando sugerencia de IA...</p>
+    </div>
+
+    <div *ngIf="errorIa">
+      <p>No se pudo obtener la sugerencia</p>
+      <p>{{ errorIa }}</p>
+    </div>
+
+    <div *ngIf="sugerenciaIa">
+      <p>Tipo sugerido: {{ sugerenciaIa.tipoSugerido || 'Sin tipo sugerido' }}</p>
+      <p>Impacto sugerido: {{ sugerenciaIa.impactoSugerido || 'Sin impacto sugerido' }}</p>
+      <p>Canal sugerido: {{ sugerenciaIa.canalSugerido || 'Sin canal sugerido' }}</p>
+      <p>Prioridad sugerida: {{ sugerenciaIa.prioridadSugerida || 'Sin prioridad sugerida' }}</p>
+      <p>Justificacion: {{ sugerenciaIa.justificacion || 'Sin justificacion' }}</p>
+      <p>Requiere confirmacion humana: {{ sugerenciaIa.requiereConfirmacionHumana ? 'Si' : 'No' }}</p>
+      <p>Fuente: {{ sugerenciaIa.fuente || 'Sin fuente' }}</p>
+      <button type="button" (click)="aceptarSugerenciaIa()">Aceptar sugerencia y llenar tipo, impacto y canal</button>
+      <button type="button" (click)="limpiarSugerenciaIa()">Limpiar sugerencia</button>
+    </div>
+
+    <div>
       <label for="fechaLimite">Fecha limite (opcional)</label>
       <input
         id="fechaLimite"
