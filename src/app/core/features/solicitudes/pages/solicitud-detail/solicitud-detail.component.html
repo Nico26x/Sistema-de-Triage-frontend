@@ -1,0 +1,37 @@
+<div>
+  <h1>Detalle de solicitud</h1>
+
+  <div>
+    <button type="button" (click)="volverAMisSolicitudes()">Volver a Mis solicitudes</button>
+    <button type="button" (click)="actualizarDetalle()">Actualizar detalle</button>
+  </div>
+
+  <div *ngIf="loading">
+    <p>Cargando detalle de la solicitud...</p>
+  </div>
+
+  <div *ngIf="!loading && error">
+    <h2>No se pudo cargar el detalle</h2>
+    <p>{{ error }}</p>
+    <button type="button" (click)="actualizarDetalle()">Reintentar</button>
+  </div>
+
+  <div *ngIf="!loading && !error && !solicitud">
+    <p>No se encontro la solicitud.</p>
+  </div>
+
+  <div *ngIf="!loading && !error && solicitud">
+    <p>Solicitud #{{ solicitud.id }}</p>
+    <p>Descripcion: {{ solicitud.descripcion || 'Sin descripcion' }}</p>
+    <p>Estado: {{ solicitud.estado || 'Sin estado' }}</p>
+    <p>Prioridad: {{ solicitud.prioridad || 'Sin prioridad' }}</p>
+    <p>Impacto: {{ solicitud.impacto || 'Sin impacto' }}</p>
+    <p>Tipo de solicitud: {{ solicitud.tipoSolicitud || 'Sin tipo' }}</p>
+    <p>Canal de origen: {{ solicitud.canalOrigen || 'Sin canal' }}</p>
+    <p>Fecha de registro: {{ solicitud.fechaRegistro || 'Sin fecha' }}</p>
+    <p>Fecha limite: {{ solicitud.fechaLimite || 'No definida' }}</p>
+    <p>Solicitante: {{ solicitud.solicitante || 'Sin solicitante' }}</p>
+    <p>Responsable: {{ solicitud.responsable || 'Sin responsable' }}</p>
+    <p>Justificacion de prioridad: {{ solicitud.justificacionPrioridad || 'Sin justificacion' }}</p>
+  </div>
+</div>

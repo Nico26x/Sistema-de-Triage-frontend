@@ -40,6 +40,7 @@
         <p><span class="badge">Fecha de registro:</span> {{ solicitud.fechaRegistro || 'Sin fecha' }}</p>
         <p><span class="badge">Fecha limite:</span> {{ solicitud.fechaLimite || 'No definida' }}</p>
       </div>
+      <button type="button" (click)="verDetalle(solicitud.id)">Ver detalle</button>
     </article>
   </section>
 </div>

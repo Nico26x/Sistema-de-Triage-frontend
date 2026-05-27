@@ -19,6 +19,10 @@ export const SOLICITUDES_ROUTES: Routes = [
         path: 'mis-solicitudes',
         loadComponent: () => import('./pages/solicitud-list/solicitud-list.component').then(m => m.SolicitudListComponent)
       },
+      {
+        path: 'detalle/:id',
+        loadComponent: () => import('./pages/solicitud-detail/solicitud-detail.component').then(m => m.SolicitudDetailComponent)
+      },
       // ADMINISTRATIVO Routes
       {
         path: 'pendientes',

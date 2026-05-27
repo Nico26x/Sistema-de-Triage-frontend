@@ -76,6 +76,10 @@ export class SolicitudListComponent implements OnInit {
     this.router.navigate(['/dashboard/solicitudes']);
   }
 
+  verDetalle(id: number): void {
+    this.router.navigate(['/dashboard/solicitudes/detalle', id]);
+  }
+
   resumenDescripcion(descripcion?: string): string {
     if (!descripcion) return 'Sin descripcion';
     return descripcion.length > 120 ? `${descripcion.slice(0, 120)}...` : descripcion;

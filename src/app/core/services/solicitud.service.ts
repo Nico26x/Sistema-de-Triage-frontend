@@ -12,6 +12,10 @@ export class SolicitudService {
     return this.http.get<SolicitudResponse[]>(API_ENDPOINTS.solicitudes.base);
   }
 
+  obtenerSolicitudPorId(id: number): Observable<SolicitudResponse> {
+    return this.http.get<SolicitudResponse>(API_ENDPOINTS.solicitudes.detail(id));
+  }
+
   crearSolicitud(request: SolicitudCreateRequest): Observable<SolicitudResponse> {
     return this.http.post<SolicitudResponse>(API_ENDPOINTS.solicitudes.base, request);
   }
