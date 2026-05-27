@@ -1,6 +1,36 @@
 <section>
   <h1>Gestion de usuarios</h1>
-  <p>Administra usuarios del sistema. Proximamente podras listar, crear, activar y desactivar usuarios.</p>
+  <p>Administra usuarios del sistema. Proximamente podras crear, activar y desactivar usuarios.</p>
+
+  <button type="button" (click)="refrescar()" [disabled]="loading">Actualizar</button>
+  <a routerLink="/dashboard/usuarios/crear-administrativo">Crear administrativo</a>
+
+  <p *ngIf="loading">Cargando usuarios...</p>
+  <p *ngIf="!loading && error">{{ error }}</p>
+  <p *ngIf="!loading && !error && usuarios.length === 0">No hay usuarios registrados.</p>
+
+  <table *ngIf="!loading && !error && usuarios.length > 0">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Email</th>
+        <th>Identificacion</th>
+        <th>Rol</th>
+        <th>Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let usuario of usuarios">
+        <td>{{ usuario.nombre || 'Sin nombre' }}</td>
+        <td>{{ usuario.email || 'Sin email' }}</td>
+        <td>{{ usuario.identificacion || 'Sin identificacion' }}</td>
+        <td>{{ usuario.rol || 'Sin rol' }}</td>
+        <td>
+          {{ usuario.activo === true ? 'Activo' : usuario.activo === false ? 'Inactivo' : 'Sin estado' }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
 
   <div>
     <article>
