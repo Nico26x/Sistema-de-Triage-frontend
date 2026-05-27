@@ -122,6 +122,11 @@ export interface CambiarEstadoRequest {
   observacion?: string;
 }
 
+export interface CambiarEstadoSolicitudRequest {
+  nuevoEstado: EstadoSolicitud;
+  observacion?: string | null;
+}
+
 export interface CerrarRequest {
   observacion: string;
 }

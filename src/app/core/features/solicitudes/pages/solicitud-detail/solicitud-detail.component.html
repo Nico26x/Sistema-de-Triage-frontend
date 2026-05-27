@@ -95,6 +95,46 @@
     <div *ngIf="rolPuedeClasificar() && solicitud.estado !== 'REGISTRADA'">
       <p>Esta solicitud ya no puede clasificarse porque no esta en estado REGISTRADA.</p>
     </div>
+
+    <div *ngIf="puedeCambiarEstado()">
+      <h2>Cambiar estado</h2>
+
+      <div>
+        <label for="nuevoEstado">Nuevo estado</label>
+        <select id="nuevoEstado" name="nuevoEstado" [(ngModel)]="cambioEstadoForm.nuevoEstado">
+          <option value="">Selecciona el nuevo estado</option>
+          <option *ngFor="let estado of obtenerEstadosPermitidosParaCambio()" [value]="estado">{{ estado }}</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="observacionCambioEstado">Observacion (opcional)</label>
+        <textarea
+          id="observacionCambioEstado"
+          name="observacionCambioEstado"
+          rows="3"
+          maxlength="500"
+          [(ngModel)]="cambioEstadoForm.observacion"
+        ></textarea>
+        <p>Maximo 500 caracteres.</p>
+      </div>
+
+      <div *ngIf="cambiandoEstado">
+        <p>Cambiando estado...</p>
+      </div>
+
+      <div *ngIf="errorCambioEstado">
+        <p>{{ errorCambioEstado }}</p>
+      </div>
+
+      <div *ngIf="exitoCambioEstado">
+        <p>{{ exitoCambioEstado }}</p>
+      </div>
+
+      <button type="button" (click)="cambiarEstadoSolicitud()" [disabled]="cambiandoEstado || loading">
+        Cambiar estado
+      </button>
+    </div>
   </div>
 
   <div>

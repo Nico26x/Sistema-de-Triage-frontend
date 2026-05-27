@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { API_ENDPOINTS } from '../config/api.config';
-import { ClasificarSolicitudRequest, SolicitudCreateRequest, SolicitudFiltros, SolicitudHistorialResponse, SolicitudResponse, SugerenciaClasificacionRequest, SugerenciaClasificacionResponse } from '../models/solicitud.models';
+import { CambiarEstadoSolicitudRequest, ClasificarSolicitudRequest, SolicitudCreateRequest, SolicitudFiltros, SolicitudHistorialResponse, SolicitudResponse, SugerenciaClasificacionRequest, SugerenciaClasificacionResponse } from '../models/solicitud.models';
 
 @Injectable({ providedIn: 'root' })
 export class SolicitudService {
@@ -52,6 +52,10 @@ export class SolicitudService {
 
   clasificarSolicitud(id: number, request: ClasificarSolicitudRequest): Observable<SolicitudResponse> {
     return this.http.put<SolicitudResponse>(API_ENDPOINTS.solicitudes.clasificar(id), request);
+  }
+
+  cambiarEstadoSolicitud(id: number, request: CambiarEstadoSolicitudRequest): Observable<SolicitudResponse> {
+    return this.http.put<SolicitudResponse>(API_ENDPOINTS.solicitudes.cambiarEstado(id), request);
   }
 
   sugerirClasificacion(request: SugerenciaClasificacionRequest): Observable<SugerenciaClasificacionResponse> {

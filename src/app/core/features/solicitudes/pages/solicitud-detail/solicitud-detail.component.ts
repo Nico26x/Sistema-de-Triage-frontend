@@ -6,8 +6,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { finalize } from 'rxjs';
 import { SolicitudService } from '../../../../services/solicitud.service';
 import { AuthService } from '../../../../services/auth.service';
-import { ImpactoAcademico, TipoSolicitudNombre } from '../../../../models/enums.models';
-import { ClasificarSolicitudRequest, SolicitudHistorialResponse, SolicitudResponse } from '../../../../models/solicitud.models';
+import { EstadoSolicitud, ImpactoAcademico, TipoSolicitudNombre } from '../../../../models/enums.models';
+import { CambiarEstadoSolicitudRequest, ClasificarSolicitudRequest, SolicitudHistorialResponse, SolicitudResponse } from '../../../../models/solicitud.models';
 
 @Component({
   standalone: true,
@@ -36,6 +36,16 @@ export class SolicitudDetailComponent implements OnInit {
   clasificando = false;
   errorClasificacion = '';
   exitoClasificacion = '';
+  formularioClasificacionPrecargado = false;
+
+  cambioEstadoForm = {
+    nuevoEstado: '' as EstadoSolicitud | '',
+    observacion: ''
+  };
+
+  cambiandoEstado = false;
+  errorCambioEstado = '';
+  exitoCambioEstado = '';
 
   tiposClasificacion: TipoSolicitudNombre[] = [
     'HOMOLOGACION',
@@ -71,6 +81,29 @@ export class SolicitudDetailComponent implements OnInit {
     return this.rolPuedeClasificar() && this.solicitud?.estado === 'REGISTRADA';
   }
 
+  rolPuedeCambiarEstado(): boolean {
+    return this.userRole === 'ADMINISTRATIVO' || this.userRole === 'COORDINADOR';
+  }
+
+  puedeCambiarEstado(): boolean {
+    return (
+      this.rolPuedeCambiarEstado() &&
+      (this.solicitud?.estado === 'CLASIFICADA' || this.solicitud?.estado === 'EN_ATENCION')
+    );
+  }
+
+  obtenerEstadosPermitidosParaCambio(): EstadoSolicitud[] {
+    if (this.solicitud?.estado === 'CLASIFICADA') {
+      return ['EN_ATENCION'];
+    }
+
+    if (this.solicitud?.estado === 'EN_ATENCION') {
+      return ['ATENDIDA'];
+    }
+
+    return [];
+  }
+
   cargarDetalle(): void {
     if (this.solicitudId === null) {
       this.error = 'El identificador de solicitud no es valido.';
@@ -94,6 +127,7 @@ export class SolicitudDetailComponent implements OnInit {
       .subscribe({
         next: response => {
           this.solicitud = response;
+          this.precargarFormularioClasificacion();
           this.cdr.detectChanges();
         },
         error: (error: unknown) => {
@@ -213,6 +247,64 @@ export class SolicitudDetailComponent implements OnInit {
       });
   }
 
+  cambiarEstadoSolicitud(): void {
+    this.errorCambioEstado = '';
+    this.exitoCambioEstado = '';
+
+    if (!this.solicitud?.id) {
+      this.errorCambioEstado = 'No se pudo identificar la solicitud.';
+      this.cdr.detectChanges();
+      return;
+    }
+
+    if (!this.puedeCambiarEstado()) {
+      this.errorCambioEstado = 'Esta solicitud no puede cambiar de estado en su estado actual.';
+      this.cdr.detectChanges();
+      return;
+    }
+
+    const errorValidacion = this.validarFormularioCambioEstado();
+    if (errorValidacion) {
+      this.errorCambioEstado = errorValidacion;
+      this.cdr.detectChanges();
+      return;
+    }
+
+    const request: CambiarEstadoSolicitudRequest = {
+      nuevoEstado: this.cambioEstadoForm.nuevoEstado as EstadoSolicitud,
+      observacion: this.cambioEstadoForm.observacion?.trim() || null
+    };
+
+    this.cambiandoEstado = true;
+
+    this.solicitudService
+      .cambiarEstadoSolicitud(this.solicitud.id, request)
+      .pipe(
+        finalize(() => {
+          this.cambiandoEstado = false;
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.exitoCambioEstado = 'Estado actualizado correctamente.';
+          this.errorCambioEstado = '';
+          this.cambioEstadoForm = {
+            nuevoEstado: '',
+            observacion: ''
+          };
+          this.cargarDetalle();
+          this.cargarHistorial();
+          this.cdr.detectChanges();
+        },
+        error: (error: unknown) => {
+          this.errorCambioEstado = this.obtenerMensajeErrorCambioEstado(error);
+          this.exitoCambioEstado = '';
+          this.cdr.detectChanges();
+        }
+      });
+  }
+
   volverAMisSolicitudes(): void {
     this.router.navigate(['/dashboard/solicitudes/mis-solicitudes']);
   }
@@ -295,6 +387,43 @@ export class SolicitudDetailComponent implements OnInit {
     return valor;
   }
 
+  private convertirFechaBackendADatetimeLocal(fecha?: string | null): string {
+    if (!fecha?.trim()) {
+      return '';
+    }
+
+    return fecha.length >= 16 ? fecha.slice(0, 16) : fecha;
+  }
+
+  private precargarFormularioClasificacion(): void {
+    if (!this.solicitud) {
+      return;
+    }
+
+    if (!this.puedeClasificar()) {
+      return;
+    }
+
+    if (this.formularioClasificacionPrecargado) {
+      return;
+    }
+
+    if (!this.clasificacionForm.tipoSolicitud && this.solicitud.tipoSolicitud) {
+      this.clasificacionForm.tipoSolicitud = this.solicitud.tipoSolicitud;
+    }
+
+    if (!this.clasificacionForm.impacto && this.solicitud.impacto) {
+      this.clasificacionForm.impacto = this.solicitud.impacto;
+    }
+
+    if (!this.clasificacionForm.fechaLimite && this.solicitud.fechaLimite) {
+      this.clasificacionForm.fechaLimite = this.convertirFechaBackendADatetimeLocal(this.solicitud.fechaLimite);
+    }
+
+    this.formularioClasificacionPrecargado = true;
+    this.cdr.detectChanges();
+  }
+
   private validarFormularioClasificacion(): string {
     if (!this.clasificacionForm.tipoSolicitud) {
       return 'Debes seleccionar el tipo de solicitud.';
@@ -309,6 +438,24 @@ export class SolicitudDetailComponent implements OnInit {
     }
 
     if (this.clasificacionForm.observacion && this.clasificacionForm.observacion.length > 500) {
+      return 'La observacion no puede superar los 500 caracteres.';
+    }
+
+    return '';
+  }
+
+  private validarFormularioCambioEstado(): string {
+    if (!this.cambioEstadoForm.nuevoEstado) {
+      return 'Debes seleccionar el nuevo estado.';
+    }
+
+    const estadosPermitidos = this.obtenerEstadosPermitidosParaCambio();
+
+    if (!estadosPermitidos.includes(this.cambioEstadoForm.nuevoEstado as EstadoSolicitud)) {
+      return 'El estado seleccionado no es valido para esta solicitud.';
+    }
+
+    if (this.cambioEstadoForm.observacion && this.cambioEstadoForm.observacion.length > 500) {
       return 'La observacion no puede superar los 500 caracteres.';
     }
 
@@ -341,5 +488,33 @@ export class SolicitudDetailComponent implements OnInit {
     }
 
     return 'No se pudo clasificar la solicitud.';
+  }
+
+  private obtenerMensajeErrorCambioEstado(error: unknown): string {
+    if (!(error instanceof HttpErrorResponse)) {
+      return 'No se pudo cambiar el estado de la solicitud.';
+    }
+
+    if (error.status === 400) {
+      return 'Datos invalidos. Revisa el nuevo estado seleccionado.';
+    }
+
+    if (error.status === 403) {
+      return 'No tienes permisos para cambiar el estado de esta solicitud.';
+    }
+
+    if (error.status === 404) {
+      return 'La solicitud no existe.';
+    }
+
+    if (error.status === 409) {
+      return 'No se puede realizar esta transicion de estado.';
+    }
+
+    if (error.status >= 500) {
+      return 'Error del servidor al cambiar el estado de la solicitud.';
+    }
+
+    return 'No se pudo cambiar el estado de la solicitud.';
   }
 }
