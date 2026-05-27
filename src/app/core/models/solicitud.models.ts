@@ -87,6 +87,7 @@ export interface SolicitudFiltros {
   prioridad?: Prioridad | '';
   tipoSolicitud?: TipoSolicitudNombre | '';
   canalOrigen?: CanalOrigen | '';
+  responsableId?: number | string | '';
   desde?: string | '';
   hasta?: string | '';
 }

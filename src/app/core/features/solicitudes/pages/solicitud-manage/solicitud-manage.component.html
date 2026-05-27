@@ -45,6 +45,16 @@
     </div>
 
     <div>
+      <label for="responsableId">Responsable asignado</label>
+      <select id="responsableId" name="responsableId" [(ngModel)]="filtros.responsableId">
+        <option value="">Todos los responsables</option>
+        <option *ngFor="let responsable of responsablesFiltrados" [value]="responsable.id">
+          {{ responsable.nombre }} - {{ responsable.rol }}
+        </option>
+      </select>
+    </div>
+
+    <div>
       <label for="desde">Desde</label>
       <input id="desde" name="desde" type="date" [(ngModel)]="filtros.desde" />
     </div>
