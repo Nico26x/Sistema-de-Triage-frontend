@@ -117,6 +117,10 @@ export interface AsignarRequest {
   responsableId: number;
 }
 
+export interface AsignarResponsableRequest {
+  responsableId: number;
+}
+
 export interface CambiarEstadoRequest {
   nuevoEstado: EstadoSolicitud;
   observacion?: string;

@@ -14,6 +14,9 @@ export const API_ENDPOINTS = {
     cambiarEstado: (id: number) => `${API_BASE_URL}/solicitudes/${id}/estado`,
     cerrar: (id: number) => `${API_BASE_URL}/solicitudes/${id}/cerrar`,
   },
+  usuarios: {
+    responsables: `${API_BASE_URL}/usuarios/responsables`,
+  },
   ia: {
     sugerirClasificacion: `${API_BASE_URL}/ia/solicitudes/sugerir-clasificacion`,
   },
