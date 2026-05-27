@@ -114,7 +114,7 @@
     <!-- COORDINADOR -->
     <ng-container *ngIf="userRole === 'COORDINADOR'">
 
-      <div class="hub-card" (click)="goTo('/dashboard/solicitudes/gestion-general')">
+      <div class="hub-card" (click)="goTo('/dashboard/solicitudes/gestion')">
         <div class="hub-card-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>
@@ -125,25 +125,14 @@
         <div class="hub-card-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
       </div>
 
-      <div class="hub-card" (click)="goTo('/dashboard/solicitudes/estadisticas')">
-        <div class="hub-card-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
-          </svg>
-        </div>
-        <h2>Estadísticas</h2>
-        <p>Visualiza métricas y reportes del sistema.</p>
-        <div class="hub-card-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
-      </div>
-
-      <div class="hub-card" (click)="goTo('/dashboard/solicitudes/supervision')">
+      <div class="hub-card" (click)="goTo('/dashboard/solicitudes/gestion', { estado: 'ATENDIDA' })">
         <div class="hub-card-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
           </svg>
         </div>
-        <h2>Supervisión</h2>
-        <p>Monitorea el flujo de solicitudes.</p>
+        <h2>Solicitudes por cerrar</h2>
+        <p>Revisa solicitudes atendidas pendientes de cierre.</p>
         <div class="hub-card-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
       </div>
 
@@ -155,19 +144,7 @@
           </svg>
         </div>
         <h2>Usuarios</h2>
-        <p>Gestiona usuarios del sistema.</p>
-        <div class="hub-card-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
-      </div>
-
-      <div class="hub-card" (click)="goTo('/dashboard/solicitudes/administracion')">
-        <div class="hub-card-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="3"/>
-            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/>
-          </svg>
-        </div>
-        <h2>Administración</h2>
-        <p>Configuraciones avanzadas del sistema.</p>
+        <p>Gestión futura de usuarios del sistema.</p>
         <div class="hub-card-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
       </div>
 
