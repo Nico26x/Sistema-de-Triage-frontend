@@ -1,14 +1,15 @@
 import { Component } from '@angular/core';
-import { Router,RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../../services/auth.service';
+import { AlertService } from '../../../../services/alert.service';
 
 @Component({
   standalone: true,
   selector: 'app-register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css'],
-  imports: [FormsModule,RouterLink]
+  imports: [FormsModule, RouterLink]
 })
 export class RegisterComponent {
   nombre = '';
@@ -20,24 +21,38 @@ export class RegisterComponent {
   error = '';
   success = '';
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private alertService: AlertService
+  ) {}
 
   onSubmit() {
     this.error = '';
     this.success = '';
+
     if (!this.nombre || !this.email || !this.identificacion || !this.password || !this.confirmPassword) {
-      this.error = 'Todos los campos son obligatorios.';
+      this.alertService.toast('warning', 'Todos los campos son obligatorios.');
       return;
     }
+
     if (!this.validateEmail(this.email)) {
-      this.error = 'Ingrese un correo electrónico válido.';
+      this.alertService.toast('error', 'Ingrese un correo electrónico válido.');
       return;
     }
+
     if (this.password !== this.confirmPassword) {
-      this.error = 'Las contraseñas no coinciden.';
+      this.alertService.toast('error', 'Las contraseñas no coinciden.');
       return;
     }
+
+    if (this.password.length < 8) {
+      this.alertService.toast('warning', 'La contraseña debe tener mínimo 8 caracteres.');
+      return;
+    }
+
     this.loading = true;
+
     this.authService.register({
       nombre: this.nombre,
       email: this.email,
@@ -46,14 +61,26 @@ export class RegisterComponent {
     }).subscribe({
       next: () => {
         this.success = 'Registro exitoso. Redirigiendo a login.';
-        setTimeout(() => this.router.navigate(['/auth/login']), 1500);
+        this.alertService.toast('success', '¡Registro exitoso! Redirigiendo...');
+        
+        // Limpiar formulario
+        this.nombre = '';
+        this.email = '';
+        this.identificacion = '';
+        this.password = '';
+        this.confirmPassword = '';
+        
+        setTimeout(() => {
+          this.router.navigate(['/auth/login']);
+        }, 1500);
       },
       error: (err) => {
-        if (err?.error?.message) {
-          this.error = err.error.message;
-        } else {
-          this.error = 'Error al registrarse. Verifique los datos o intente más tarde.';
-        }
+        const errorMessage = err?.error?.message || 'Error al registrarse. Verifique los datos o intente más tarde.';
+        this.error = errorMessage;
+        this.alertService.error(
+          'Error en el registro',
+          errorMessage
+        );
       },
       complete: () => {
         this.loading = false;
