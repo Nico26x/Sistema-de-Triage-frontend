@@ -15,6 +15,7 @@ export const API_ENDPOINTS = {
     cerrar: (id: number) => `${API_BASE_URL}/solicitudes/${id}/cerrar`,
   },
   usuarios: {
+    base: `${API_BASE_URL}/usuarios`,
     responsables: `${API_BASE_URL}/usuarios/responsables`,
   },
   ia: {

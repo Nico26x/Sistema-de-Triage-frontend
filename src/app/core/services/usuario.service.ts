@@ -8,6 +8,10 @@ import { UsuarioResponse } from '../models/usuario.models';
 export class UsuarioService {
   constructor(private http: HttpClient) {}
 
+  listarUsuarios(): Observable<UsuarioResponse[]> {
+    return this.http.get<UsuarioResponse[]>(API_ENDPOINTS.usuarios.base);
+  }
+
   listarResponsables(): Observable<UsuarioResponse[]> {
     return this.http.get<UsuarioResponse[]>(API_ENDPOINTS.usuarios.responsables);
   }
