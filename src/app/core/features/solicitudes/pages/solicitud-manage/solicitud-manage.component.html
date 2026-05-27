@@ -1,0 +1,96 @@
+<div>
+  <h1>Gestion de solicitudes</h1>
+  <p>Consulta todas las solicitudes registradas en el sistema.</p>
+
+  <div>
+    <button type="button" (click)="actualizar()" [disabled]="loading">
+      {{ loading ? 'Actualizando...' : 'Actualizar' }}
+    </button>
+    <button type="button" (click)="volverAlPanel()" [disabled]="loading">Volver al panel de solicitudes</button>
+  </div>
+
+  <section>
+    <h2>Filtros</h2>
+
+    <div>
+      <label for="estado">Estado</label>
+      <select id="estado" name="estado" [(ngModel)]="filtros.estado">
+        <option value="">Todos los estados</option>
+        <option *ngFor="let estado of estados" [value]="estado">{{ estado }}</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="prioridad">Prioridad</label>
+      <select id="prioridad" name="prioridad" [(ngModel)]="filtros.prioridad">
+        <option value="">Todas las prioridades</option>
+        <option *ngFor="let prioridad of prioridades" [value]="prioridad">{{ prioridad }}</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="tipoSolicitud">Tipo de solicitud</label>
+      <select id="tipoSolicitud" name="tipoSolicitud" [(ngModel)]="filtros.tipoSolicitud">
+        <option value="">Todos los tipos</option>
+        <option *ngFor="let tipo of tipos" [value]="tipo">{{ tipo }}</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="canalOrigen">Canal</label>
+      <select id="canalOrigen" name="canalOrigen" [(ngModel)]="filtros.canalOrigen">
+        <option value="">Todos los canales</option>
+        <option *ngFor="let canal of canales" [value]="canal">{{ canal }}</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="desde">Desde</label>
+      <input id="desde" name="desde" type="date" [(ngModel)]="filtros.desde" />
+    </div>
+
+    <div>
+      <label for="hasta">Hasta</label>
+      <input id="hasta" name="hasta" type="date" [(ngModel)]="filtros.hasta" />
+    </div>
+
+    <div>
+      <button type="button" (click)="aplicarFiltros()" [disabled]="loading">Aplicar filtros</button>
+      <button type="button" (click)="limpiarFiltros()" [disabled]="loading">Limpiar filtros</button>
+    </div>
+  </section>
+
+  <section *ngIf="loading">
+    <p>Cargando solicitudes...</p>
+  </section>
+
+  <section *ngIf="!loading && error">
+    <p>{{ error }}</p>
+  </section>
+
+  <section *ngIf="!loading && !error && solicitudes.length === 0 && !filtrosAplicados">
+    <p>Aun no hay solicitudes registradas.</p>
+  </section>
+
+  <section *ngIf="!loading && !error && solicitudes.length === 0 && filtrosAplicados">
+    <p>No se encontraron solicitudes con los filtros aplicados.</p>
+  </section>
+
+  <section *ngIf="!loading && !error && solicitudes.length > 0">
+    <article *ngFor="let solicitud of solicitudes; trackBy: trackBySolicitudId">
+      <p><strong>ID:</strong> {{ solicitud.id }}</p>
+      <p><strong>Descripcion:</strong> {{ solicitud.descripcion || 'Sin descripcion' }}</p>
+      <p><strong>Estado:</strong> {{ solicitud.estado || 'Sin estado' }}</p>
+      <p><strong>Prioridad:</strong> {{ solicitud.prioridad || 'Sin prioridad' }}</p>
+      <p><strong>Tipo de solicitud:</strong> {{ solicitud.tipoSolicitud || 'Sin tipo' }}</p>
+      <p><strong>Impacto:</strong> {{ solicitud.impacto || 'Sin impacto' }}</p>
+      <p><strong>Canal:</strong> {{ solicitud.canalOrigen || 'Sin canal' }}</p>
+      <p><strong>Solicitante:</strong> {{ solicitud.solicitante || 'Sin solicitante' }}</p>
+      <p><strong>Responsable:</strong> {{ solicitud.responsable || 'Sin responsable' }}</p>
+      <p><strong>Fecha registro:</strong> {{ solicitud.fechaRegistro || 'Sin fecha' }}</p>
+      <p><strong>Fecha limite:</strong> {{ solicitud.fechaLimite || 'No definida' }}</p>
+      <button type="button" (click)="verDetalle(solicitud.id)" [disabled]="loading">Ver detalle</button>
+      <hr />
+    </article>
+  </section>
+</div>

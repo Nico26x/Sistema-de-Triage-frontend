@@ -106,6 +106,13 @@ export interface ClasificarRequest {
   observacion?: string;
 }
 
+export interface ClasificarSolicitudRequest {
+  tipoSolicitud: TipoSolicitudNombre;
+  impacto: ImpactoAcademico;
+  fechaLimite: string;
+  observacion?: string | null;
+}
+
 export interface AsignarRequest {
   responsableId: number;
 }

@@ -33,6 +33,68 @@
     <p>Solicitante: {{ solicitud.solicitante || 'Sin solicitante' }}</p>
     <p>Responsable: {{ solicitud.responsable || 'Sin responsable' }}</p>
     <p>Justificacion de prioridad: {{ solicitud.justificacionPrioridad || 'Sin justificacion' }}</p>
+
+    <div *ngIf="puedeClasificar()">
+      <h2>Clasificar solicitud</h2>
+
+      <div>
+        <label for="tipoSolicitud">Tipo de solicitud</label>
+        <select id="tipoSolicitud" name="tipoSolicitud" [(ngModel)]="clasificacionForm.tipoSolicitud">
+          <option value="">Selecciona un tipo</option>
+          <option *ngFor="let tipo of tiposClasificacion" [value]="tipo">{{ tipo }}</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="impactoClasificacion">Impacto academico</label>
+        <select id="impactoClasificacion" name="impactoClasificacion" [(ngModel)]="clasificacionForm.impacto">
+          <option value="">Selecciona un impacto</option>
+          <option *ngFor="let impacto of impactosClasificacion" [value]="impacto">{{ impacto }}</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="fechaLimiteClasificacion">Fecha limite</label>
+        <input
+          id="fechaLimiteClasificacion"
+          name="fechaLimiteClasificacion"
+          type="datetime-local"
+          [(ngModel)]="clasificacionForm.fechaLimite"
+        />
+      </div>
+
+      <div>
+        <label for="observacionClasificacion">Observacion (opcional)</label>
+        <textarea
+          id="observacionClasificacion"
+          name="observacionClasificacion"
+          rows="3"
+          maxlength="500"
+          [(ngModel)]="clasificacionForm.observacion"
+        ></textarea>
+        <p>Maximo 500 caracteres.</p>
+      </div>
+
+      <div *ngIf="clasificando">
+        <p>Clasificando solicitud...</p>
+      </div>
+
+      <div *ngIf="errorClasificacion">
+        <p>{{ errorClasificacion }}</p>
+      </div>
+
+      <div *ngIf="exitoClasificacion">
+        <p>{{ exitoClasificacion }}</p>
+      </div>
+
+      <button type="button" (click)="clasificarSolicitud()" [disabled]="clasificando || loading">
+        Clasificar solicitud
+      </button>
+    </div>
+
+    <div *ngIf="rolPuedeClasificar() && solicitud.estado !== 'REGISTRADA'">
+      <p>Esta solicitud ya no puede clasificarse porque no esta en estado REGISTRADA.</p>
+    </div>
   </div>
 
   <div>

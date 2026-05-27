@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { API_ENDPOINTS } from '../config/api.config';
-import { SolicitudCreateRequest, SolicitudFiltros, SolicitudHistorialResponse, SolicitudResponse, SugerenciaClasificacionRequest, SugerenciaClasificacionResponse } from '../models/solicitud.models';
+import { ClasificarSolicitudRequest, SolicitudCreateRequest, SolicitudFiltros, SolicitudHistorialResponse, SolicitudResponse, SugerenciaClasificacionRequest, SugerenciaClasificacionResponse } from '../models/solicitud.models';
 
 @Injectable({ providedIn: 'root' })
 export class SolicitudService {
@@ -38,12 +38,20 @@ export class SolicitudService {
     return this.http.get<SolicitudResponse[]>(API_ENDPOINTS.solicitudes.base, { params });
   }
 
+  listarSolicitudes(filtros?: SolicitudFiltros): Observable<SolicitudResponse[]> {
+    return this.getMisSolicitudes(filtros);
+  }
+
   obtenerSolicitudPorId(id: number): Observable<SolicitudResponse> {
     return this.http.get<SolicitudResponse>(API_ENDPOINTS.solicitudes.detail(id));
   }
 
   obtenerHistorialSolicitud(id: number): Observable<SolicitudHistorialResponse[]> {
     return this.http.get<SolicitudHistorialResponse[]>(API_ENDPOINTS.solicitudes.historial(id));
+  }
+
+  clasificarSolicitud(id: number, request: ClasificarSolicitudRequest): Observable<SolicitudResponse> {
+    return this.http.put<SolicitudResponse>(API_ENDPOINTS.solicitudes.clasificar(id), request);
   }
 
   sugerirClasificacion(request: SugerenciaClasificacionRequest): Observable<SugerenciaClasificacionResponse> {

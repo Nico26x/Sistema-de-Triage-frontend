@@ -75,17 +75,6 @@
     <!-- ADMINISTRATIVO -->
     <ng-container *ngIf="userRole === 'ADMINISTRATIVO'">
 
-      <div class="hub-card" (click)="goTo('/dashboard/solicitudes/pendientes')">
-        <div class="hub-card-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-          </svg>
-        </div>
-        <h2>Pendientes</h2>
-        <p>Revisa y gestiona solicitudes en espera.</p>
-        <div class="hub-card-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
-      </div>
-
       <div class="hub-card" (click)="goTo('/dashboard/solicitudes/gestion')">
         <div class="hub-card-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -93,41 +82,30 @@
           </svg>
         </div>
         <h2>Gestionar solicitudes</h2>
-        <p>Accede a todas las solicitudes del sistema.</p>
+        <p>Consulta y administra todas las solicitudes del sistema.</p>
         <div class="hub-card-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
       </div>
 
-      <div class="hub-card" (click)="goTo('/dashboard/solicitudes/cambiar-estado')">
+      <div class="hub-card" (click)="goTo('/dashboard/solicitudes/gestion')">
+        <div class="hub-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+          </svg>
+        </div>
+        <h2>Pendientes</h2>
+        <p>Acceso rapido a solicitudes que requieren atencion inicial.</p>
+        <div class="hub-card-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
+      </div>
+
+      <div class="hub-card" (click)="goTo('/dashboard/solicitudes/gestion')">
         <div class="hub-card-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/>
             <polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/>
           </svg>
         </div>
-        <h2>Cambiar estados</h2>
-        <p>Actualiza el estado de las solicitudes.</p>
-        <div class="hub-card-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
-      </div>
-
-      <div class="hub-card" (click)="goTo('/dashboard/solicitudes/prioridades')">
-        <div class="hub-card-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-          </svg>
-        </div>
-        <h2>Prioridades</h2>
-        <p>Gestiona prioridades de atención.</p>
-        <div class="hub-card-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
-      </div>
-
-      <div class="hub-card" (click)="goTo('/dashboard/solicitudes/historial')">
-        <div class="hub-card-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 3h6l2 3h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/>
-          </svg>
-        </div>
-        <h2>Historial</h2>
-        <p>Consulta el historial de cambios.</p>
+        <h2>Acciones de seguimiento</h2>
+        <p>Clasificacion, cambio de estado, prioridad e historial se realizan desde Gestion o Detalle.</p>
         <div class="hub-card-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
       </div>
 

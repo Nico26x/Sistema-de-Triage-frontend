@@ -30,7 +30,7 @@ export const SOLICITUDES_ROUTES: Routes = [
       },
       {
         path: 'gestion',
-        loadComponent: () => import('./pages/placeholder/solicitud-placeholder.component').then(m => m.SolicitudPlaceholderComponent)
+        loadComponent: () => import('./pages/solicitud-manage/solicitud-manage.component').then(m => m.SolicitudManageComponent)
       },
       {
         path: 'cambiar-estado',
