@@ -5,13 +5,42 @@
   <button type="button" (click)="refrescar()" [disabled]="loading">Actualizar</button>
   <a routerLink="/dashboard/usuarios/crear-administrativo">Crear administrativo</a>
 
+  <div>
+    <input
+      type="text"
+      placeholder="Buscar por nombre, email o identificacion"
+      [(ngModel)]="terminoBusqueda"
+      (ngModelChange)="aplicarFiltros()"
+    />
+
+    <select [(ngModel)]="filtroRol" (ngModelChange)="aplicarFiltros()">
+      <option value="">Todos los roles</option>
+      <option value="ESTUDIANTE">Estudiante</option>
+      <option value="ADMINISTRATIVO">Administrativo</option>
+      <option value="COORDINADOR">Coordinador</option>
+    </select>
+
+    <select [(ngModel)]="filtroEstado" (ngModelChange)="aplicarFiltros()">
+      <option value="">Todos los estados</option>
+      <option value="ACTIVO">Activo</option>
+      <option value="INACTIVO">Inactivo</option>
+    </select>
+
+    <button type="button" (click)="limpiarFiltros()">Limpiar filtros</button>
+  </div>
+
+  <p>Mostrando {{ usuariosFiltrados.length }} de {{ usuarios.length }} usuarios</p>
+
   <p *ngIf="loading">Cargando usuarios...</p>
   <p *ngIf="!loading && error">{{ error }}</p>
   <p *ngIf="!loading && errorAccion">{{ errorAccion }}</p>
   <p *ngIf="!loading && exitoAccion">{{ exitoAccion }}</p>
   <p *ngIf="!loading && !error && usuarios.length === 0">No hay usuarios registrados.</p>
+  <p *ngIf="!loading && !error && usuarios.length > 0 && usuariosFiltrados.length === 0">
+    No hay resultados para los filtros aplicados.
+  </p>
 
-  <table *ngIf="!loading && !error && usuarios.length > 0">
+  <table *ngIf="!loading && !error && usuariosFiltrados.length > 0">
     <thead>
       <tr>
         <th>Nombre</th>
@@ -23,7 +52,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let usuario of usuarios">
+      <tr *ngFor="let usuario of usuariosFiltrados">
         <td>{{ usuario.nombre || 'Sin nombre' }}</td>
         <td>{{ usuario.email || 'Sin email' }}</td>
         <td>{{ usuario.identificacion || 'Sin identificacion' }}</td>
