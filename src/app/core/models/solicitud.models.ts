@@ -18,18 +18,23 @@ export interface SolicitudCreateRequest {
 export interface SolicitudResponse {
   id: number;
   descripcion: string;
-  canal?: CanalOrigen;
+  fechaRegistro?: string;
+  estado?: EstadoSolicitud;
+  prioridad?: Prioridad;
+  justificacionPrioridad?: string;
+  canalOrigen?: CanalOrigen;
+  tipoSolicitud?: TipoSolicitudNombre;
   solicitante?: string;
-  solicitanteId?: number;
   responsable?: string;
+  impacto?: ImpactoAcademico;
+  fechaLimite?: string | null;
+
+  // Compatibilidad temporal con nombres antiguos
+  canal?: CanalOrigen;
+  solicitanteId?: number;
   responsableId?: number;
   tipo?: TipoSolicitudNombre;
-  prioridad?: Prioridad;
   estadoActual?: EstadoSolicitud;
-  impacto?: ImpactoAcademico;
-  fechaRegistro?: string;
-  fechaLimite?: string | null;
-  justificacionPrioridad?: string;
 }
 
 export interface SolicitudFilter {

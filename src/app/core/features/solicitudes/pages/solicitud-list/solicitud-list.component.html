@@ -1,25 +1,45 @@
 <div class="solicitud-container">
-  
-  <!-- Page Header -->
   <div class="page-header">
-    <h1>Solicitudes</h1>
-  </div>
+    <div>
+      <h1>Mis solicitudes</h1>
+      <p class="page-subtitle">Consulta el estado de tus solicitudes academicas.</p>
+    </div>
 
-  <!-- Placeholder Section -->
-  <div class="placeholder-section">
-    <div class="icon-large">📋</div>
-    <h2>Aquí se gestionarán todas tus solicitudes</h2>
-    <p class="placeholder-text">Esta sección está en desarrollo y pronto podrás crear, consultar y gestionar tus solicitudes académicas.</p>
-    
-    <!-- Disabled Action Buttons (Future functionality) -->
-    <div class="action-buttons">
-      <button class="btn-action" disabled title="Funcionalidad próximamente disponible">
-        ➕ Crear Nueva Solicitud
-      </button>
-      <button class="btn-action" disabled title="Funcionalidad próximamente disponible">
-        📊 Ver Mis Solicitudes
+    <div class="header-actions">
+      <button type="button" (click)="volver()">Volver</button>
+      <button type="button" (click)="actualizar()" [disabled]="loading">
+        {{ loading ? 'Actualizando...' : 'Actualizar' }}
       </button>
     </div>
   </div>
 
+  <section *ngIf="loading" class="state-card">
+    <p>Cargando solicitudes...</p>
+  </section>
+
+  <section *ngIf="!loading && error" class="state-card state-error">
+    <h2>No se pudo cargar la informacion</h2>
+    <p>{{ error }}</p>
+    <button type="button" (click)="actualizar()">Reintentar</button>
+  </section>
+
+  <section *ngIf="!loading && !error && solicitudes.length === 0" class="state-card">
+    <h2>Aun no tienes solicitudes registradas.</h2>
+    <p>Cuando crees una solicitud, la veras aqui con su estado y prioridad.</p>
+  </section>
+
+  <section *ngIf="!loading && !error && solicitudes.length > 0" class="solicitud-list">
+    <article class="solicitud-item" *ngFor="let solicitud of solicitudes; trackBy: trackBySolicitudId">
+      <h3 class="solicitud-header">Solicitud #{{ solicitud.id }}</h3>
+      <div class="solicitud-meta">
+        <p><span class="badge">Estado:</span> {{ solicitud.estado || 'Sin estado' }}</p>
+        <p><span class="badge">Prioridad:</span> {{ solicitud.prioridad || 'Sin prioridad' }}</p>
+        <p><span class="badge">Tipo:</span> {{ solicitud.tipoSolicitud || 'Sin tipo' }}</p>
+        <p><span class="badge">Impacto:</span> {{ solicitud.impacto || 'Sin impacto' }}</p>
+        <p><span class="badge">Descripcion:</span> {{ solicitud.descripcion || 'Sin descripcion' }}</p>
+        <p><span class="badge">Fecha de registro:</span> {{ solicitud.fechaRegistro || 'Sin fecha' }}</p>
+        <p><span class="badge">Fecha limite:</span> {{ solicitud.fechaLimite || 'No definida' }}</p>
+      </div>
+    </article>
+  </section>
 </div>

@@ -17,7 +17,7 @@ export const SOLICITUDES_ROUTES: Routes = [
       },
       {
         path: 'mis-solicitudes',
-        loadComponent: () => import('./pages/placeholder/solicitud-placeholder.component').then(m => m.SolicitudPlaceholderComponent)
+        loadComponent: () => import('./pages/solicitud-list/solicitud-list.component').then(m => m.SolicitudListComponent)
       },
       // ADMINISTRATIVO Routes
       {
