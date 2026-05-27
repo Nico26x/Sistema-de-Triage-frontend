@@ -5,9 +5,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { finalize } from 'rxjs';
 import { SolicitudService } from '../../../../services/solicitud.service';
+import { UsuarioService } from '../../../../services/usuario.service';
 import { AuthService } from '../../../../services/auth.service';
 import { EstadoSolicitud, ImpactoAcademico, TipoSolicitudNombre } from '../../../../models/enums.models';
-import { CambiarEstadoSolicitudRequest, ClasificarSolicitudRequest, SolicitudHistorialResponse, SolicitudResponse } from '../../../../models/solicitud.models';
+import { AsignarResponsableRequest, CambiarEstadoSolicitudRequest, CerrarSolicitudRequest, ClasificarSolicitudRequest, SolicitudHistorialResponse, SolicitudResponse } from '../../../../models/solicitud.models';
+import { UsuarioResponse } from '../../../../models/usuario.models';
 
 @Component({
   standalone: true,
@@ -20,6 +22,7 @@ export class SolicitudDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private solicitudService = inject(SolicitudService);
+  private usuarioService = inject(UsuarioService);
   private authService = inject(AuthService);
   private cdr = inject(ChangeDetectorRef);
 
@@ -47,6 +50,24 @@ export class SolicitudDetailComponent implements OnInit {
   cambiandoEstado = false;
   errorCambioEstado = '';
   exitoCambioEstado = '';
+
+  cierreForm = {
+    observacion: ''
+  };
+
+  cerrandoSolicitud = false;
+  errorCierre = '';
+  exitoCierre = '';
+
+  asignacionForm = {
+    responsableId: null as number | null
+  };
+
+  responsables: UsuarioResponse[] = [];
+  cargandoResponsables = false;
+  asignandoResponsable = false;
+  errorAsignacion = '';
+  exitoAsignacion = '';
 
   tiposClasificacion: TipoSolicitudNombre[] = [
     'HOMOLOGACION',
@@ -130,6 +151,14 @@ export class SolicitudDetailComponent implements OnInit {
     return [];
   }
 
+  puedeCerrarSolicitud(): boolean {
+    return this.userRole === 'COORDINADOR' && this.solicitud?.estado === 'ATENDIDA';
+  }
+
+  puedeAsignarResponsable(): boolean {
+    return this.userRole === 'COORDINADOR' && this.solicitud?.estado !== 'CERRADA';
+  }
+
   cargarDetalle(): void {
     if (this.solicitudId === null) {
       this.error = 'El identificador de solicitud no es valido.';
@@ -154,6 +183,7 @@ export class SolicitudDetailComponent implements OnInit {
         next: response => {
           this.solicitud = response;
           this.precargarFormularioClasificacion();
+          this.cargarResponsables();
           this.cdr.detectChanges();
         },
         error: (error: unknown) => {
@@ -209,6 +239,99 @@ export class SolicitudDetailComponent implements OnInit {
 
   actualizarHistorial(): void {
     this.cargarHistorial();
+  }
+
+  cargarResponsables(): void {
+    if (!this.puedeAsignarResponsable()) {
+      this.responsables = [];
+      this.cargandoResponsables = false;
+      this.cdr.detectChanges();
+      return;
+    }
+
+    this.cargandoResponsables = true;
+    this.errorAsignacion = '';
+
+    this.usuarioService
+      .listarResponsables()
+      .pipe(
+        finalize(() => {
+          this.cargandoResponsables = false;
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe({
+        next: response => {
+          const permitidos = Array.isArray(response)
+            ? response.filter(
+                usuario =>
+                  usuario.activo === true && (usuario.rol === 'ADMINISTRATIVO' || usuario.rol === 'COORDINADOR')
+              )
+            : [];
+
+          this.responsables = permitidos;
+          this.cdr.detectChanges();
+        },
+        error: (error: unknown) => {
+          this.responsables = [];
+          this.errorAsignacion = this.obtenerMensajeErrorAsignacion(error);
+          this.cdr.detectChanges();
+        }
+      });
+  }
+
+  asignarResponsable(): void {
+    this.errorAsignacion = '';
+    this.exitoAsignacion = '';
+
+    if (!this.solicitud?.id) {
+      this.errorAsignacion = 'No se pudo identificar la solicitud.';
+      this.cdr.detectChanges();
+      return;
+    }
+
+    if (!this.puedeAsignarResponsable()) {
+      this.errorAsignacion = 'No tienes permisos para asignar responsable.';
+      this.cdr.detectChanges();
+      return;
+    }
+
+    const errorValidacion = this.validarFormularioAsignacion();
+    if (errorValidacion) {
+      this.errorAsignacion = errorValidacion;
+      this.cdr.detectChanges();
+      return;
+    }
+
+    const request: AsignarResponsableRequest = {
+      responsableId: this.asignacionForm.responsableId as number
+    };
+
+    this.asignandoResponsable = true;
+
+    this.solicitudService
+      .asignarResponsable(this.solicitud.id, request)
+      .pipe(
+        finalize(() => {
+          this.asignandoResponsable = false;
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.exitoAsignacion = 'Responsable asignado correctamente.';
+          this.errorAsignacion = '';
+          this.asignacionForm.responsableId = null;
+          this.cargarDetalle();
+          this.cargarHistorial();
+          this.cdr.detectChanges();
+        },
+        error: (error: unknown) => {
+          this.errorAsignacion = this.obtenerMensajeErrorAsignacion(error);
+          this.exitoAsignacion = '';
+          this.cdr.detectChanges();
+        }
+      });
   }
 
   clasificarSolicitud(): void {
@@ -326,6 +449,62 @@ export class SolicitudDetailComponent implements OnInit {
         error: (error: unknown) => {
           this.errorCambioEstado = this.obtenerMensajeErrorCambioEstado(error);
           this.exitoCambioEstado = '';
+          this.cdr.detectChanges();
+        }
+      });
+  }
+
+  cerrarSolicitud(): void {
+    this.errorCierre = '';
+    this.exitoCierre = '';
+
+    if (!this.solicitud?.id) {
+      this.errorCierre = 'No se pudo identificar la solicitud.';
+      this.cdr.detectChanges();
+      return;
+    }
+
+    if (!this.puedeCerrarSolicitud()) {
+      this.errorCierre = 'Esta solicitud no puede cerrarse en su estado actual.';
+      this.cdr.detectChanges();
+      return;
+    }
+
+    const errorValidacion = this.validarFormularioCierre();
+    if (errorValidacion) {
+      this.errorCierre = errorValidacion;
+      this.cdr.detectChanges();
+      return;
+    }
+
+    const request: CerrarSolicitudRequest = {
+      observacion: this.cierreForm.observacion.trim()
+    };
+
+    this.cerrandoSolicitud = true;
+
+    this.solicitudService
+      .cerrarSolicitud(this.solicitud.id, request)
+      .pipe(
+        finalize(() => {
+          this.cerrandoSolicitud = false;
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.exitoCierre = 'Solicitud cerrada correctamente.';
+          this.errorCierre = '';
+          this.cierreForm = {
+            observacion: ''
+          };
+          this.cargarDetalle();
+          this.cargarHistorial();
+          this.cdr.detectChanges();
+        },
+        error: (error: unknown) => {
+          this.errorCierre = this.obtenerMensajeErrorCierre(error);
+          this.exitoCierre = '';
           this.cdr.detectChanges();
         }
       });
@@ -488,6 +667,32 @@ export class SolicitudDetailComponent implements OnInit {
     return '';
   }
 
+  private validarFormularioCierre(): string {
+    const observacion = this.cierreForm.observacion?.trim() || '';
+
+    if (!observacion) {
+      return 'La observacion de cierre es obligatoria.';
+    }
+
+    if (observacion.length < 5) {
+      return 'La observacion debe tener minimo 5 caracteres.';
+    }
+
+    if (observacion.length > 500) {
+      return 'La observacion no puede superar los 500 caracteres.';
+    }
+
+    return '';
+  }
+
+  private validarFormularioAsignacion(): string {
+    if (!this.asignacionForm.responsableId || this.asignacionForm.responsableId <= 0) {
+      return 'Debes seleccionar un responsable valido.';
+    }
+
+    return '';
+  }
+
   private obtenerMensajeErrorClasificacion(error: unknown): string {
     if (!(error instanceof HttpErrorResponse)) {
       return 'No se pudo clasificar la solicitud.';
@@ -542,5 +747,61 @@ export class SolicitudDetailComponent implements OnInit {
     }
 
     return 'No se pudo cambiar el estado de la solicitud.';
+  }
+
+  private obtenerMensajeErrorCierre(error: unknown): string {
+    if (!(error instanceof HttpErrorResponse)) {
+      return 'No se pudo cerrar la solicitud.';
+    }
+
+    if (error.status === 400) {
+      return 'La observacion es obligatoria y debe tener entre 5 y 500 caracteres.';
+    }
+
+    if (error.status === 403) {
+      return 'No tienes permisos para cerrar esta solicitud.';
+    }
+
+    if (error.status === 404) {
+      return 'La solicitud no existe.';
+    }
+
+    if (error.status === 409) {
+      return 'La solicitud no puede cerrarse porque no esta en estado ATENDIDA o ya fue cerrada.';
+    }
+
+    if (error.status >= 500) {
+      return 'Error del servidor al cerrar la solicitud.';
+    }
+
+    return 'No se pudo cerrar la solicitud.';
+  }
+
+  private obtenerMensajeErrorAsignacion(error: unknown): string {
+    if (!(error instanceof HttpErrorResponse)) {
+      return 'No se pudo asignar responsable.';
+    }
+
+    if (error.status === 400) {
+      return 'Debes seleccionar un responsable valido.';
+    }
+
+    if (error.status === 403) {
+      return 'No tienes permisos para asignar responsable.';
+    }
+
+    if (error.status === 404) {
+      return 'La solicitud o el responsable no existe.';
+    }
+
+    if (error.status === 409) {
+      return 'No se puede asignar responsable porque la solicitud esta cerrada o el responsable esta inactivo.';
+    }
+
+    if (error.status >= 500) {
+      return 'Error del servidor al asignar responsable.';
+    }
+
+    return 'No se pudo asignar responsable.';
   }
 }

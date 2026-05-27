@@ -117,6 +117,10 @@ export interface AsignarRequest {
   responsableId: number;
 }
 
+export interface AsignarResponsableRequest {
+  responsableId: number;
+}
+
 export interface CambiarEstadoRequest {
   nuevoEstado: EstadoSolicitud;
   observacion?: string;
@@ -128,5 +132,9 @@ export interface CambiarEstadoSolicitudRequest {
 }
 
 export interface CerrarRequest {
+  observacion: string;
+}
+
+export interface CerrarSolicitudRequest {
   observacion: string;
 }

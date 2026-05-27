@@ -191,6 +191,93 @@
         </button>
       </div>
     </section>
+
+    <section *ngIf="puedeAsignarResponsable()" class="section-card">
+      <div class="section-header">
+        <h2>Asignar responsable</h2>
+      </div>
+
+      <div *ngIf="solicitud.responsable" class="message-box">
+        <p>Responsable actual: {{ solicitud.responsable }}</p>
+      </div>
+
+      <div class="field-grid">
+        <div class="field-group field-group-full">
+          <label for="responsableId">Responsable</label>
+          <select id="responsableId" name="responsableId" [(ngModel)]="asignacionForm.responsableId">
+            <option [ngValue]="null">Selecciona un responsable</option>
+            <option *ngFor="let responsable of responsables" [ngValue]="responsable.id">
+              {{ responsable.nombre }} - {{ responsable.email }} ({{ responsable.rol }})
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div *ngIf="cargandoResponsables" class="status-panel">
+        <p>Cargando responsables...</p>
+      </div>
+
+      <div *ngIf="asignandoResponsable" class="status-panel">
+        <p>Asignando responsable...</p>
+      </div>
+
+      <div *ngIf="errorAsignacion" class="message-box error">
+        <p>{{ errorAsignacion }}</p>
+      </div>
+
+      <div *ngIf="exitoAsignacion" class="message-box">
+        <p>{{ exitoAsignacion }}</p>
+      </div>
+
+      <div class="button-row">
+        <button
+          class="btn-primary"
+          type="button"
+          (click)="asignarResponsable()"
+          [disabled]="asignandoResponsable || cargandoResponsables || loading"
+        >
+          Asignar responsable
+        </button>
+      </div>
+    </section>
+
+    <section *ngIf="puedeCerrarSolicitud()" class="section-card">
+      <div class="section-header">
+        <h2>Cerrar solicitud</h2>
+      </div>
+
+      <div class="field-grid">
+        <div class="field-group field-group-full">
+          <label for="observacionCierre">Observación de cierre</label>
+          <textarea
+            id="observacionCierre"
+            name="observacionCierre"
+            rows="3"
+            maxlength="500"
+            [(ngModel)]="cierreForm.observacion"
+          ></textarea>
+          <p>La observación es obligatoria. Mínimo 5 y máximo 500 caracteres.</p>
+        </div>
+      </div>
+
+      <div *ngIf="cerrandoSolicitud" class="status-panel">
+        <p>Cerrando solicitud...</p>
+      </div>
+
+      <div *ngIf="errorCierre" class="message-box error">
+        <p>{{ errorCierre }}</p>
+      </div>
+
+      <div *ngIf="exitoCierre" class="message-box">
+        <p>{{ exitoCierre }}</p>
+      </div>
+
+      <div class="button-row">
+        <button class="btn-primary" type="button" (click)="cerrarSolicitud()" [disabled]="cerrandoSolicitud || loading">
+          Cerrar solicitud
+        </button>
+      </div>
+    </section>
   </section>
 
   <section class="section-card">
