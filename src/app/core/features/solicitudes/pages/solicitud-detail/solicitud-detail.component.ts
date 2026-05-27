@@ -7,7 +7,7 @@ import { finalize } from 'rxjs';
 import { SolicitudService } from '../../../../services/solicitud.service';
 import { AuthService } from '../../../../services/auth.service';
 import { EstadoSolicitud, ImpactoAcademico, TipoSolicitudNombre } from '../../../../models/enums.models';
-import { CambiarEstadoSolicitudRequest, ClasificarSolicitudRequest, SolicitudHistorialResponse, SolicitudResponse } from '../../../../models/solicitud.models';
+import { CambiarEstadoSolicitudRequest, CerrarSolicitudRequest, ClasificarSolicitudRequest, SolicitudHistorialResponse, SolicitudResponse } from '../../../../models/solicitud.models';
 
 @Component({
   standalone: true,
@@ -47,6 +47,14 @@ export class SolicitudDetailComponent implements OnInit {
   cambiandoEstado = false;
   errorCambioEstado = '';
   exitoCambioEstado = '';
+
+  cierreForm = {
+    observacion: ''
+  };
+
+  cerrandoSolicitud = false;
+  errorCierre = '';
+  exitoCierre = '';
 
   tiposClasificacion: TipoSolicitudNombre[] = [
     'HOMOLOGACION',
@@ -128,6 +136,10 @@ export class SolicitudDetailComponent implements OnInit {
     }
 
     return [];
+  }
+
+  puedeCerrarSolicitud(): boolean {
+    return this.userRole === 'COORDINADOR' && this.solicitud?.estado === 'ATENDIDA';
   }
 
   cargarDetalle(): void {
@@ -331,6 +343,62 @@ export class SolicitudDetailComponent implements OnInit {
       });
   }
 
+  cerrarSolicitud(): void {
+    this.errorCierre = '';
+    this.exitoCierre = '';
+
+    if (!this.solicitud?.id) {
+      this.errorCierre = 'No se pudo identificar la solicitud.';
+      this.cdr.detectChanges();
+      return;
+    }
+
+    if (!this.puedeCerrarSolicitud()) {
+      this.errorCierre = 'Esta solicitud no puede cerrarse en su estado actual.';
+      this.cdr.detectChanges();
+      return;
+    }
+
+    const errorValidacion = this.validarFormularioCierre();
+    if (errorValidacion) {
+      this.errorCierre = errorValidacion;
+      this.cdr.detectChanges();
+      return;
+    }
+
+    const request: CerrarSolicitudRequest = {
+      observacion: this.cierreForm.observacion.trim()
+    };
+
+    this.cerrandoSolicitud = true;
+
+    this.solicitudService
+      .cerrarSolicitud(this.solicitud.id, request)
+      .pipe(
+        finalize(() => {
+          this.cerrandoSolicitud = false;
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.exitoCierre = 'Solicitud cerrada correctamente.';
+          this.errorCierre = '';
+          this.cierreForm = {
+            observacion: ''
+          };
+          this.cargarDetalle();
+          this.cargarHistorial();
+          this.cdr.detectChanges();
+        },
+        error: (error: unknown) => {
+          this.errorCierre = this.obtenerMensajeErrorCierre(error);
+          this.exitoCierre = '';
+          this.cdr.detectChanges();
+        }
+      });
+  }
+
   volverAMisSolicitudes(): void {
     this.router.navigate(['/dashboard/solicitudes/mis-solicitudes']);
   }
@@ -488,6 +556,24 @@ export class SolicitudDetailComponent implements OnInit {
     return '';
   }
 
+  private validarFormularioCierre(): string {
+    const observacion = this.cierreForm.observacion?.trim() || '';
+
+    if (!observacion) {
+      return 'La observacion de cierre es obligatoria.';
+    }
+
+    if (observacion.length < 5) {
+      return 'La observacion debe tener minimo 5 caracteres.';
+    }
+
+    if (observacion.length > 500) {
+      return 'La observacion no puede superar los 500 caracteres.';
+    }
+
+    return '';
+  }
+
   private obtenerMensajeErrorClasificacion(error: unknown): string {
     if (!(error instanceof HttpErrorResponse)) {
       return 'No se pudo clasificar la solicitud.';
@@ -542,5 +628,33 @@ export class SolicitudDetailComponent implements OnInit {
     }
 
     return 'No se pudo cambiar el estado de la solicitud.';
+  }
+
+  private obtenerMensajeErrorCierre(error: unknown): string {
+    if (!(error instanceof HttpErrorResponse)) {
+      return 'No se pudo cerrar la solicitud.';
+    }
+
+    if (error.status === 400) {
+      return 'La observacion es obligatoria y debe tener entre 5 y 500 caracteres.';
+    }
+
+    if (error.status === 403) {
+      return 'No tienes permisos para cerrar esta solicitud.';
+    }
+
+    if (error.status === 404) {
+      return 'La solicitud no existe.';
+    }
+
+    if (error.status === 409) {
+      return 'La solicitud no puede cerrarse porque no esta en estado ATENDIDA o ya fue cerrada.';
+    }
+
+    if (error.status >= 500) {
+      return 'Error del servidor al cerrar la solicitud.';
+    }
+
+    return 'No se pudo cerrar la solicitud.';
   }
 }

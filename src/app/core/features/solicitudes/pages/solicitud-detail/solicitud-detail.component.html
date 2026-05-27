@@ -191,6 +191,44 @@
         </button>
       </div>
     </section>
+
+    <section *ngIf="puedeCerrarSolicitud()" class="section-card">
+      <div class="section-header">
+        <h2>Cerrar solicitud</h2>
+      </div>
+
+      <div class="field-grid">
+        <div class="field-group field-group-full">
+          <label for="observacionCierre">Observación de cierre</label>
+          <textarea
+            id="observacionCierre"
+            name="observacionCierre"
+            rows="3"
+            maxlength="500"
+            [(ngModel)]="cierreForm.observacion"
+          ></textarea>
+          <p>La observación es obligatoria. Mínimo 5 y máximo 500 caracteres.</p>
+        </div>
+      </div>
+
+      <div *ngIf="cerrandoSolicitud" class="status-panel">
+        <p>Cerrando solicitud...</p>
+      </div>
+
+      <div *ngIf="errorCierre" class="message-box error">
+        <p>{{ errorCierre }}</p>
+      </div>
+
+      <div *ngIf="exitoCierre" class="message-box">
+        <p>{{ exitoCierre }}</p>
+      </div>
+
+      <div class="button-row">
+        <button class="btn-primary" type="button" (click)="cerrarSolicitud()" [disabled]="cerrandoSolicitud || loading">
+          Cerrar solicitud
+        </button>
+      </div>
+    </section>
   </section>
 
   <section class="section-card">

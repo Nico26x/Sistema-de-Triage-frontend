@@ -130,3 +130,7 @@ export interface CambiarEstadoSolicitudRequest {
 export interface CerrarRequest {
   observacion: string;
 }
+
+export interface CerrarSolicitudRequest {
+  observacion: string;
+}
