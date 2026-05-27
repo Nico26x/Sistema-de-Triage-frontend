@@ -57,11 +57,12 @@
     </div>
 
     <div>
-      <button type="submit" [disabled]="loading">
+      <button type="submit" [disabled]="loading || !!success">
         {{ loading ? 'Guardando...' : 'Guardar' }}
       </button>
       <button type="button" (click)="volver()">Volver</button>
-      <button type="button" (click)="irAMisSolicitudes()">Ir a Mis solicitudes</button>
+      <button *ngIf="success" type="button" (click)="irAMisSolicitudes()">Ir a Mis solicitudes</button>
+      <button *ngIf="success" type="button" (click)="crearOtraSolicitud()">Crear otra solicitud</button>
     </div>
   </form>
 </div>
