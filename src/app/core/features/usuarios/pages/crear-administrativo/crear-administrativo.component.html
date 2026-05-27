@@ -1,0 +1,59 @@
+<section>
+  <h1>Crear administrativo</h1>
+  <p>Completa los datos para registrar un nuevo usuario administrativo.</p>
+
+  <div>
+    <label for="nombre">Nombre</label>
+    <input id="nombre" name="nombre" type="text" [(ngModel)]="form.nombre" [disabled]="loading" />
+  </div>
+
+  <div>
+    <label for="apellido">Apellido</label>
+    <input id="apellido" name="apellido" type="text" [(ngModel)]="form.apellido" [disabled]="loading" />
+  </div>
+
+  <div>
+    <label for="email">Email</label>
+    <input id="email" name="email" type="email" [(ngModel)]="form.email" [disabled]="loading" />
+  </div>
+
+  <div>
+    <label for="identificacion">Identificacion</label>
+    <input
+      id="identificacion"
+      name="identificacion"
+      type="text"
+      [(ngModel)]="form.identificacion"
+      [disabled]="loading"
+    />
+  </div>
+
+  <div>
+    <label for="password">Password</label>
+    <input id="password" name="password" type="password" [(ngModel)]="form.password" [disabled]="loading" />
+  </div>
+
+  <div>
+    <label for="confirmarPassword">Confirmar password</label>
+    <input
+      id="confirmarPassword"
+      name="confirmarPassword"
+      type="password"
+      [(ngModel)]="form.confirmarPassword"
+      [disabled]="loading"
+    />
+  </div>
+
+  <div>
+    <button type="button" (click)="crearAdministrativo()" [disabled]="loading">Crear administrativo</button>
+    <button type="button" (click)="volverAlListado()" [disabled]="loading">Volver</button>
+  </div>
+
+  <p *ngIf="loading">Creando administrativo...</p>
+  <p *ngIf="error">{{ error }}</p>
+  <p *ngIf="exito">{{ exito }}</p>
+
+  <div *ngIf="exito">
+    <button type="button" (click)="volverAlListado()">Volver al listado</button>
+  </div>
+</section>

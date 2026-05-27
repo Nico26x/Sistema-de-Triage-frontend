@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 import { UsuarioResponse } from '../../../../models/usuario.models';
 import { UsuarioService } from '../../../../services/usuario.service';
@@ -9,7 +10,7 @@ import { UsuarioService } from '../../../../services/usuario.service';
   standalone: true,
   selector: 'app-usuarios-page',
   templateUrl: './usuarios-page.component.html',
-  imports: [CommonModule]
+  imports: [CommonModule, RouterLink]
 })
 export class UsuariosPageComponent implements OnInit {
   usuarios: UsuarioResponse[] = [];

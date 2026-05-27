@@ -3,6 +3,7 @@
   <p>Administra usuarios del sistema. Proximamente podras crear, activar y desactivar usuarios.</p>
 
   <button type="button" (click)="refrescar()" [disabled]="loading">Actualizar</button>
+  <a routerLink="/dashboard/usuarios/crear-administrativo">Crear administrativo</a>
 
   <p *ngIf="loading">Cargando usuarios...</p>
   <p *ngIf="!loading && error">{{ error }}</p>
