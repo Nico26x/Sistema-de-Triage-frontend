@@ -92,6 +92,31 @@ export class SolicitudDetailComponent implements OnInit {
     );
   }
 
+  obtenerMensajeEstadoAdministrativo(): string {
+    switch (this.solicitud?.estado) {
+      case 'REGISTRADA':
+        return 'Esta solicitud esta pendiente de clasificacion.';
+      case 'CLASIFICADA':
+        return 'La solicitud ya fue clasificada. Puedes iniciar su atencion.';
+      case 'EN_ATENCION':
+        return 'La solicitud esta en atencion. Cuando finalice la gestion, marcala como atendida.';
+      case 'ATENDIDA':
+        return 'La solicitud ya fue atendida. Queda pendiente de cierre por coordinacion.';
+      case 'CERRADA':
+        return 'La solicitud esta cerrada. Solo lectura.';
+      default:
+        return '';
+    }
+  }
+
+  mostrarMensajeEstadoAdministrativo(): boolean {
+    return (
+      (this.userRole === 'ADMINISTRATIVO' || this.userRole === 'COORDINADOR') &&
+      !!this.solicitud?.estado &&
+      !!this.obtenerMensajeEstadoAdministrativo()
+    );
+  }
+
   obtenerEstadosPermitidosParaCambio(): EstadoSolicitud[] {
     if (this.solicitud?.estado === 'CLASIFICADA') {
       return ['EN_ATENCION'];

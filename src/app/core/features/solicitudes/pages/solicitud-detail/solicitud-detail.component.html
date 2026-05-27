@@ -34,6 +34,10 @@
     <p>Responsable: {{ solicitud.responsable || 'Sin responsable' }}</p>
     <p>Justificacion de prioridad: {{ solicitud.justificacionPrioridad || 'Sin justificacion' }}</p>
 
+    <div *ngIf="mostrarMensajeEstadoAdministrativo()">
+      <p>{{ obtenerMensajeEstadoAdministrativo() }}</p>
+    </div>
+
     <div *ngIf="puedeClasificar()">
       <h2>Clasificar solicitud</h2>
 
