@@ -82,6 +82,15 @@ export interface SolicitudFilter {
   hasta?: string;
 }
 
+export interface SolicitudFiltros {
+  estado?: EstadoSolicitud | '';
+  prioridad?: Prioridad | '';
+  tipoSolicitud?: TipoSolicitudNombre | '';
+  canalOrigen?: CanalOrigen | '';
+  desde?: string | '';
+  hasta?: string | '';
+}
+
 export interface HistorialEntry {
   id?: number;
   fechaHora?: string;

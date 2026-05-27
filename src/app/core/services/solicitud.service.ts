@@ -1,15 +1,41 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { API_ENDPOINTS } from '../config/api.config';
-import { SolicitudCreateRequest, SolicitudHistorialResponse, SolicitudResponse, SugerenciaClasificacionRequest, SugerenciaClasificacionResponse } from '../models/solicitud.models';
+import { SolicitudCreateRequest, SolicitudFiltros, SolicitudHistorialResponse, SolicitudResponse, SugerenciaClasificacionRequest, SugerenciaClasificacionResponse } from '../models/solicitud.models';
 
 @Injectable({ providedIn: 'root' })
 export class SolicitudService {
   constructor(private http: HttpClient) {}
 
-  getMisSolicitudes(): Observable<SolicitudResponse[]> {
-    return this.http.get<SolicitudResponse[]>(API_ENDPOINTS.solicitudes.base);
+  getMisSolicitudes(filtros?: SolicitudFiltros): Observable<SolicitudResponse[]> {
+    let params = new HttpParams();
+
+    if (filtros?.estado) {
+      params = params.set('estado', filtros.estado);
+    }
+
+    if (filtros?.prioridad) {
+      params = params.set('prioridad', filtros.prioridad);
+    }
+
+    if (filtros?.tipoSolicitud) {
+      params = params.set('tipoSolicitud', filtros.tipoSolicitud);
+    }
+
+    if (filtros?.canalOrigen) {
+      params = params.set('canalOrigen', filtros.canalOrigen);
+    }
+
+    if (filtros?.desde) {
+      params = params.set('desde', filtros.desde);
+    }
+
+    if (filtros?.hasta) {
+      params = params.set('hasta', filtros.hasta);
+    }
+
+    return this.http.get<SolicitudResponse[]>(API_ENDPOINTS.solicitudes.base, { params });
   }
 
   obtenerSolicitudPorId(id: number): Observable<SolicitudResponse> {
