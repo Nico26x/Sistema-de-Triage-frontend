@@ -1,84 +1,98 @@
-<div>
-  <h1>Crear solicitud</h1>
-  <p>Completa la informacion para registrar tu solicitud academica.</p>
-
-  <div *ngIf="error">
-    <p>No se pudo crear la solicitud</p>
-    <p>{{ error }}</p>
-  </div>
-
-  <div *ngIf="success">
-    <p>{{ success }}</p>
-  </div>
-
-  <form (ngSubmit)="guardar()">
+<div class="solicitud-create-page">
+  <header class="page-header">
     <div>
-      <label for="descripcion">Descripcion</label>
+      <h1>Crear solicitud</h1>
+      <p>Completa la información para registrar tu solicitud académica.</p>
+    </div>
+  </header>
+
+  <section class="message-section" *ngIf="error || success">
+    <div class="message-card error" *ngIf="error">
+      <p class="message-title">Error</p>
+      <p>{{ error }}</p>
+    </div>
+
+    <div class="message-card success" *ngIf="success">
+      <p>{{ success }}</p>
+    </div>
+  </section>
+
+  <form class="solicitud-form" (ngSubmit)="guardar()">
+    <div class="field-group">
+      <label for="descripcion">Descripción</label>
       <textarea
         id="descripcion"
         name="descripcion"
         [(ngModel)]="descripcion"
-        rows="4"
+        rows="5"
       ></textarea>
     </div>
 
-    <div>
-      <label for="canal">Canal</label>
-      <select id="canal" name="canal" [(ngModel)]="canal">
-        <option value="">Selecciona un canal</option>
-        <option *ngFor="let opcion of canales" [value]="opcion">{{ opcion }}</option>
-      </select>
+    <div class="field-grid">
+      <div class="field-group">
+        <label for="canal">Canal</label>
+        <select id="canal" name="canal" [(ngModel)]="canal">
+          <option value="">Selecciona un canal</option>
+          <option *ngFor="let opcion of canales" [value]="opcion">{{ opcion }}</option>
+        </select>
+      </div>
+
+      <div class="field-group">
+        <label for="impacto">Impacto</label>
+        <select id="impacto" name="impacto" [(ngModel)]="impacto">
+          <option value="">Selecciona un impacto</option>
+          <option *ngFor="let opcion of impactos" [value]="opcion">{{ opcion }}</option>
+        </select>
+      </div>
+
+      <div class="field-group">
+        <label for="tipo">Tipo</label>
+        <select id="tipo" name="tipo" [(ngModel)]="tipo">
+          <option value="">Selecciona un tipo</option>
+          <option *ngFor="let opcion of tipos" [value]="opcion">{{ opcion }}</option>
+        </select>
+      </div>
     </div>
 
-    <div>
-      <label for="impacto">Impacto</label>
-      <select id="impacto" name="impacto" [(ngModel)]="impacto">
-        <option value="">Selecciona un impacto</option>
-        <option *ngFor="let opcion of impactos" [value]="opcion">{{ opcion }}</option>
-      </select>
-    </div>
-
-    <div>
-      <label for="tipo">Tipo</label>
-      <select id="tipo" name="tipo" [(ngModel)]="tipo">
-        <option value="">Selecciona un tipo</option>
-        <option *ngFor="let opcion of tipos" [value]="opcion">{{ opcion }}</option>
-      </select>
-    </div>
-
-    <div>
+    <div class="action-row">
       <button
+        class="btn-outline"
         type="button"
         (click)="sugerirClasificacion()"
         [disabled]="loading || loadingIa || !descripcion.trim()"
       >
-        Sugerir clasificacion con IA
+        Sugerir clasificación con IA
       </button>
     </div>
 
-    <div *ngIf="loadingIa">
-      <p>Consultando sugerencia de IA...</p>
+    <div class="status-panel" *ngIf="loadingIa">
+      <p>Consultando sugerencia de IA…</p>
     </div>
 
-    <div *ngIf="errorIa">
+    <div class="status-panel error" *ngIf="errorIa">
       <p>No se pudo obtener la sugerencia</p>
       <p>{{ errorIa }}</p>
     </div>
 
-    <div *ngIf="sugerenciaIa">
-      <p>Tipo sugerido: {{ sugerenciaIa.tipoSugerido || 'Sin tipo sugerido' }}</p>
-      <p>Impacto sugerido: {{ sugerenciaIa.impactoSugerido || 'Sin impacto sugerido' }}</p>
-      <p>Canal sugerido: {{ sugerenciaIa.canalSugerido || 'Sin canal sugerido' }}</p>
-      <p>Prioridad sugerida: {{ sugerenciaIa.prioridadSugerida || 'Sin prioridad sugerida' }}</p>
-      <p>Justificacion: {{ sugerenciaIa.justificacion || 'Sin justificacion' }}</p>
-      <p>Requiere confirmacion humana: {{ sugerenciaIa.requiereConfirmacionHumana ? 'Si' : 'No' }}</p>
-      <p>Fuente: {{ sugerenciaIa.fuente || 'Sin fuente' }}</p>
-      <button type="button" (click)="aceptarSugerenciaIa()">Aceptar sugerencia y llenar tipo, impacto y canal</button>
-      <button type="button" (click)="limpiarSugerenciaIa()">Limpiar sugerencia</button>
-    </div>
+    <section class="suggestion-panel" *ngIf="sugerenciaIa">
+      <h2>Sugerencia de IA</h2>
+      <div class="suggestion-grid">
+        <p><strong>Tipo sugerido:</strong> {{ sugerenciaIa.tipoSugerido || 'Sin tipo sugerido' }}</p>
+        <p><strong>Impacto sugerido:</strong> {{ sugerenciaIa.impactoSugerido || 'Sin impacto sugerido' }}</p>
+        <p><strong>Canal sugerido:</strong> {{ sugerenciaIa.canalSugerido || 'Sin canal sugerido' }}</p>
+        <p><strong>Prioridad sugerida:</strong> {{ sugerenciaIa.prioridadSugerida || 'Sin prioridad sugerida' }}</p>
+        <p><strong>Justificación:</strong> {{ sugerenciaIa.justificacion || 'Sin justificación' }}</p>
+        <p><strong>Requiere confirmación humana:</strong> {{ sugerenciaIa.requiereConfirmacionHumana ? 'Sí' : 'No' }}</p>
+        <p><strong>Fuente:</strong> {{ sugerenciaIa.fuente || 'Sin fuente' }}</p>
+      </div>
+      <div class="suggestion-actions">
+        <button class="btn-primary" type="button" (click)="aceptarSugerenciaIa()">Aceptar sugerencia</button>
+        <button class="btn-outline" type="button" (click)="limpiarSugerenciaIa()">Limpiar sugerencia</button>
+      </div>
+    </section>
 
-    <div>
-      <label for="fechaLimite">Fecha limite (opcional)</label>
+    <div class="field-group">
+      <label for="fechaLimite">Fecha límite (opcional)</label>
       <input
         id="fechaLimite"
         name="fechaLimite"
@@ -87,13 +101,13 @@
       />
     </div>
 
-    <div>
-      <button type="submit" [disabled]="loading || !!success">
+    <div class="button-row">
+      <button class="btn-primary" type="submit" [disabled]="loading || !!success">
         {{ loading ? 'Guardando...' : 'Guardar' }}
       </button>
-      <button type="button" (click)="volver()">Volver</button>
-      <button *ngIf="success" type="button" (click)="irAMisSolicitudes()">Ir a Mis solicitudes</button>
-      <button *ngIf="success" type="button" (click)="crearOtraSolicitud()">Crear otra solicitud</button>
+      <button class="btn-secondary" type="button" (click)="volver()">Volver</button>
+      <button class="btn-secondary" *ngIf="success" type="button" (click)="irAMisSolicitudes()">Ir a Mis solicitudes</button>
+      <button class="btn-secondary" *ngIf="success" type="button" (click)="crearOtraSolicitud()">Crear otra solicitud</button>
     </div>
   </form>
 </div>

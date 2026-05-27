@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { finalize } from 'rxjs';
 import { SolicitudService } from '../../../../services/solicitud.service';
+import { AlertService } from '../../../../services/alert.service';
 import { SolicitudCreateRequest, SugerenciaClasificacionRequest, SugerenciaClasificacionResponse } from '../../../../models/solicitud.models';
 import { CanalOrigen, ImpactoAcademico, TipoSolicitudNombre } from '../../../../models/enums.models';
 
@@ -12,10 +13,12 @@ import { CanalOrigen, ImpactoAcademico, TipoSolicitudNombre } from '../../../../
   standalone: true,
   selector: 'app-solicitud-create',
   templateUrl: './solicitud-create.component.html',
+  styleUrls: ['./solicitud-create.component.css'],
   imports: [CommonModule, FormsModule]
 })
 export class SolicitudCreateComponent {
   private solicitudService = inject(SolicitudService);
+  private alertService = inject(AlertService);
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
 
@@ -49,8 +52,9 @@ export class SolicitudCreateComponent {
     }
 
     if (!this.descripcion.trim() || !this.canal || !this.impacto || !this.tipo) {
-      this.error = 'Debes completar descripcion, canal, impacto y tipo.';
+      this.error = 'Debes completar descripción, canal, impacto y tipo.';
       this.success = '';
+      this.alertService.toast('warning', this.error);
       this.cdr.detectChanges();
       return;
     }
@@ -59,6 +63,7 @@ export class SolicitudCreateComponent {
     if (errorFecha) {
       this.error = errorFecha;
       this.success = '';
+      this.alertService.toast('warning', errorFecha);
       this.cdr.detectChanges();
       return;
     }
@@ -81,11 +86,13 @@ export class SolicitudCreateComponent {
         next: () => {
           this.success = 'Solicitud creada correctamente.';
           this.error = '';
+          this.alertService.toast('success', this.success);
           this.cdr.detectChanges();
         },
         error: (error: unknown) => {
           this.success = '';
           this.error = this.obtenerMensajeError(error);
+          this.alertService.toast('error', this.error);
           this.cdr.detectChanges();
         }
       });

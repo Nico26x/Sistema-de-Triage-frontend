@@ -7,6 +7,7 @@ import { finalize, timeout } from 'rxjs';
 import { CanalOrigen, EstadoSolicitud, Prioridad, TipoSolicitudNombre } from '../../../../models/enums.models';
 import { SolicitudFiltros, SolicitudResponse } from '../../../../models/solicitud.models';
 import { SolicitudService } from '../../../../services/solicitud.service';
+import { AlertService } from '../../../../services/alert.service';
 
 @Component({
   standalone: true,
@@ -19,6 +20,7 @@ export class SolicitudListComponent implements OnInit {
   private solicitudService = inject(SolicitudService);
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
+  private alertService = inject(AlertService);
 
   solicitudes: SolicitudResponse[] = [];
   loading = false;
@@ -74,6 +76,10 @@ export class SolicitudListComponent implements OnInit {
           if (!Array.isArray(response)) {
             this.solicitudes = [];
             this.error = 'La respuesta del servidor no tiene el formato esperado para solicitudes.';
+            this.alertService.error(
+              'Error en la respuesta',
+              'El servidor devolvió un formato inesperado. Por favor intenta nuevamente.'
+            );
             return;
           }
 
@@ -82,12 +88,14 @@ export class SolicitudListComponent implements OnInit {
             fechaRegistro: this.normalizarFechaIsoOpcional(solicitud.fechaRegistro),
             fechaLimite: this.normalizarFechaIsoNullable(solicitud.fechaLimite),
           }));
+          
           this.cdr.detectChanges();
         },
         error: error => {
           console.error('[SolicitudList] cargarSolicitudes:error', error);
           this.solicitudes = [];
           this.error = this.obtenerMensajeError(error);
+          this.mostrarErrorAlert(error);
         }
       });
   }
@@ -100,6 +108,7 @@ export class SolicitudListComponent implements OnInit {
 
     this.filtrosAplicados = false;
     this.cargarSolicitudes();
+    this.alertService.toast('info', 'Actualizando solicitudes...');
   }
 
   aplicarFiltros(): void {
@@ -107,12 +116,18 @@ export class SolicitudListComponent implements OnInit {
 
     if (this.fechasInvalidas()) {
       this.error = 'La fecha desde no puede ser mayor que la fecha hasta.';
+      this.alertService.toast('error', 'Las fechas son inválidas. Verifica los rangos.');
       this.cdr.detectChanges();
       return;
     }
 
     const filtrosApi = this.construirFiltrosParaApi();
     this.filtrosAplicados = this.hayFiltrosActivos();
+    
+    if (this.filtrosAplicados) {
+      this.alertService.toast('info', 'Aplicando filtros...');
+    }
+    
     this.cargarSolicitudes(filtrosApi);
   }
 
@@ -128,15 +143,19 @@ export class SolicitudListComponent implements OnInit {
     this.filtrosAplicados = false;
     this.error = '';
     this.cargarSolicitudes();
+    this.alertService.toast('success', 'Filtros limpios');
     this.cdr.detectChanges();
   }
 
   volver(): void {
-    this.router.navigate(['/dashboard/solicitudes']);
+    this.router.navigate(['/dashboard']);
   }
 
   verDetalle(id: number): void {
-    this.router.navigate(['/dashboard/solicitudes/detalle', id]);
+    this.alertService.toast('info', `Cargando solicitud #${id}...`);
+    setTimeout(() => {
+      this.router.navigate(['/dashboard/solicitudes/detalle', id]);
+    }, 500);
   }
 
   resumenDescripcion(descripcion?: string): string {
@@ -182,6 +201,48 @@ export class SolicitudListComponent implements OnInit {
     }
 
     return 'No fue posible cargar tus solicitudes. Intenta nuevamente.';
+  }
+
+  private mostrarErrorAlert(error: unknown): void {
+    if (!(error instanceof HttpErrorResponse)) {
+      this.alertService.error(
+        'Error al cargar solicitudes',
+        'No fue posible cargar tus solicitudes. Intenta nuevamente.'
+      );
+      return;
+    }
+
+    if (error.status === 0) {
+      this.alertService.error(
+        'Sin conexión',
+        'No se pudo conectar con el servidor. Verifica tu conexión a internet.'
+      );
+      return;
+    }
+
+    if (error.status === 401 || error.status === 403) {
+      this.alertService.error(
+        'Sesión expirada',
+        'Tu sesión ha expirado. Por favor inicia sesión nuevamente.'
+      );
+      setTimeout(() => {
+        this.router.navigate(['/auth/login']);
+      }, 2000);
+      return;
+    }
+
+    if (error.status >= 500) {
+      this.alertService.error(
+        'Error del servidor',
+        'El servidor está experimentando problemas. Por favor intenta más tarde.'
+      );
+      return;
+    }
+
+    this.alertService.error(
+      'Error al cargar solicitudes',
+      'Ocurrió un error inesperado. Por favor intenta nuevamente.'
+    );
   }
 
   private construirFiltrosParaApi(): SolicitudFiltros {
