@@ -114,6 +114,11 @@
 .summary-item:nth-child(5) { background: #ecfeff; border-color: #a5f3fc; }
 .summary-item:nth-child(6) { background: #fef2f2; border-color: #fca5a5; }
 
+/* Ocultar el campo de justificación de prioridad (10º item) */
+.summary-item:nth-child(11) {
+  display: none;
+}
+
 .summary-item strong {
   display: block;
   font-size: 0.75rem;

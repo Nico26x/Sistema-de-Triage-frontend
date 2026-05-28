@@ -56,11 +56,11 @@
       </div>
       <div class="summary-item">
         <strong>Fecha de registro</strong>
-        <p>{{ solicitud.fechaRegistro || 'Sin fecha' }}</p>
+        <p>{{ solicitud.fechaRegistro | date: 'dd/MM/yyyy' }}</p>
       </div>
       <div class="summary-item">
         <strong>Fecha límite</strong>
-        <p>{{ solicitud.fechaLimite || 'No definida' }}</p>
+        <p>{{ solicitud.fechaLimite | date: 'dd/MM/yyyy' }}</p>
       </div>
       <div class="summary-item">
         <strong>Solicitante</strong>
@@ -69,10 +69,6 @@
       <div class="summary-item">
         <strong>Responsable</strong>
         <p>{{ solicitud.responsable || 'Sin responsable' }}</p>
-      </div>
-      <div class="summary-item">
-        <strong>Justificación de prioridad</strong>
-        <p>{{ solicitud.justificacionPrioridad || 'Sin justificación' }}</p>
       </div>
     </div>
 
@@ -298,16 +294,16 @@
     </div>
 
     <div *ngIf="!loadingHistorial && !errorHistorial && historial.length === 0">
-      <p>No hay movimientos registrados en el historial.</p>
+      <p style="padding: 0 24px; color: #9ca3af;">No hay movimientos registrados en el historial.</p>
     </div>
 
     <div *ngIf="!loadingHistorial && !errorHistorial && historial.length > 0" class="historial-grid">
       <div *ngFor="let item of historial" class="historial-item">
-        <p><strong>Fecha:</strong> {{ item.fechaHora || 'Sin fecha' }}</p>
+        <p><strong>Fecha:</strong> {{ item.fechaHora | date: 'dd/MM/yyyy HH:mm' }}</p>
         <p><strong>Acción:</strong> {{ item.accion || 'Sin acción' }}</p>
         <p><strong>Estado anterior:</strong> {{ item.estadoAnterior || 'Sin estado anterior' }}</p>
         <p><strong>Estado nuevo:</strong> {{ item.estadoNuevo || 'Sin estado nuevo' }}</p>
-        <p><strong>Actor ID:</strong> {{ item.actorId || 'Sin actor' }}</p>
+        <p><strong>Actor:</strong> {{ item.actorId || 'Sin actor' }}</p>
         <p><strong>Observación:</strong> {{ item.observacion || 'Sin observación' }}</p>
       </div>
     </div>
