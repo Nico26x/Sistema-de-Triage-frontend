@@ -1,57 +1,291 @@
 <div class="login-card">
 
-  <!-- Header -->
-  <div class="login-header">
-    <div class="login-logo">
-      <img src="logo-uniquindio.png" alt="Logo Universidad del Quindío">
+  <!-- LEFT SIDE -->
+  <div class="login-left">
+
+    <!-- Background circles -->
+    <div class="left-circle left-circle-1"></div>
+    <div class="left-circle left-circle-2"></div>
+
+    <!-- Logo -->
+    <div class="brand-badge">
+
+      <svg width="72" height="72" viewBox="0 0 64 64" fill="none">
+
+        <circle cx="32" cy="32" r="30" fill="#ffffff22"/>
+
+        <!-- U -->
+        <path
+          d="M20 18V38C20 46 25 50 32 50C39 50 44 46 44 38V18"
+          stroke="white"
+          stroke-width="4"
+          stroke-linecap="round"
+        />
+
+        <!-- Interior -->
+        <path
+          d="M26 26V37C26 41 28 44 32 44C36 44 38 41 38 37V26"
+          stroke="#FFD54F"
+          stroke-width="4"
+          stroke-linecap="round"
+        />
+
+      </svg>
+
     </div>
-    <p class="login-eyebrow">Portal Académico</p>
-    <h1>Solicitudes Académicas</h1>
-    <p class="login-subtitle">Ingresa a tu cuenta para continuar</p>
+
+    <!-- Content -->
+    <div class="left-content">
+
+      <span class="left-badge">
+        Universidad del Quindío
+      </span>
+
+      <h1>
+        Portal <br />
+        Académico
+      </h1>
+
+      <p>
+        Gestiona solicitudes académicas, procesos
+        administrativos y trámites institucionales
+        desde una plataforma moderna, segura y eficiente.
+      </p>
+
+      <!-- FEATURES -->
+      <div class="feature-list">
+
+        <!-- ITEM -->
+        <div class="feature-item">
+
+          <div class="feature-icon">
+
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round">
+
+              <path d="M20 6L9 17l-5-5"/>
+
+            </svg>
+
+          </div>
+
+          <span>
+            Solicitudes académicas
+          </span>
+
+        </div>
+
+        <!-- ITEM -->
+        <div class="feature-item">
+
+          <div class="feature-icon">
+
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round">
+
+              <path d="M20 6L9 17l-5-5"/>
+
+            </svg>
+
+          </div>
+
+          <span>
+            Seguimiento en tiempo real
+          </span>
+
+        </div>
+
+        <!-- ITEM -->
+        <div class="feature-item">
+
+          <div class="feature-icon">
+
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round">
+
+              <path d="M20 6L9 17l-5-5"/>
+
+            </svg>
+
+          </div>
+
+          <span>
+            Acceso institucional seguro
+          </span>
+
+        </div>
+
+      </div>
+
+    </div>
+
   </div>
 
-  <!-- Form -->
-  <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+  <!-- RIGHT SIDE -->
+  <div class="login-right">
 
-    <div class="field-group">
-      <label for="email">Correo institucional</label>
-      <div class="input-wrapper">
-        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-          stroke-linecap="round" stroke-linejoin="round">
-          <rect x="2" y="4" width="20" height="16" rx="2" />
-          <path d="M2 7l10 7 10-7" />
-        </svg>
-        <input id="email" name="email" type="email" [(ngModel)]="email" required
-          placeholder="correo@universidad.edu.co" />
-      </div>
+    <!-- HEADER -->
+    <div class="login-header">
+
+      <span class="login-eyebrow">
+        Portal Académico
+      </span>
+
+      <h2 class="login-title">
+        Iniciar sesión
+      </h2>
+
+      <p class="login-subtitle">
+        Ingresa con tu correo institucional
+        para continuar.
+      </p>
+
     </div>
 
-    <div class="field-group">
-      <label for="password">Contraseña</label>
-      <div class="input-wrapper">
-        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-          stroke-linecap="round" stroke-linejoin="round">
-          <rect x="5" y="11" width="14" height="10" rx="2" />
-          <path d="M8 11V7a4 4 0 0 1 8 0v4" />
-        </svg>
-        <input id="password" name="password" type="password" [(ngModel)]="password" required placeholder="••••••••" />
+    <!-- FORM -->
+    <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+
+      <!-- EMAIL -->
+      <div class="field-group">
+
+        <label for="email">
+          Correo institucional
+        </label>
+
+        <div class="input-wrapper">
+
+          <svg
+            class="input-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round">
+
+            <rect x="2" y="4" width="20" height="16" rx="2"/>
+            <path d="M2 7l10 7 10-7"/>
+
+          </svg>
+
+          <input
+            id="email"
+            name="email"
+            type="email"
+            [(ngModel)]="email"
+            required
+            placeholder="correo@uqvirtual.edu.co"
+          />
+
+        </div>
+
       </div>
+
+      <!-- PASSWORD -->
+      <div class="field-group">
+
+        <label for="password">
+          Contraseña
+        </label>
+
+        <div class="input-wrapper">
+
+          <svg
+            class="input-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round">
+
+            <rect x="5" y="11" width="14" height="10" rx="2"/>
+            <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+
+          </svg>
+
+          <input
+            id="password"
+            name="password"
+            type="password"
+            [(ngModel)]="password"
+            required
+            placeholder="••••••••"
+          />
+
+        </div>
+
+      </div>
+
+      <!-- ERROR -->
+      <div *ngIf="error" class="error-message">
+        {{ error }}
+      </div>
+
+      <!-- BUTTON -->
+      <button
+        type="submit"
+        class="btn-primary"
+        [disabled]="loading">
+
+        <span class="btn-content">
+
+          <svg
+            *ngIf="!loading"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2">
+
+            <path d="M5 12h14"/>
+            <path d="M12 5l7 7-7 7"/>
+
+          </svg>
+
+          {{ loading ? 'Ingresando...' : 'Ingresar' }}
+
+        </span>
+
+      </button>
+
+    </form>
+
+    <!-- DIVIDER -->
+    <div class="divider">
+      <span>¿No tienes cuenta?</span>
     </div>
 
-    <button type="submit" class="btn-primary" [disabled]="loading">
-      {{ loading ? 'Ingresando...' : 'Ingresar' }}
-    </button>
+    <!-- REGISTER -->
+    <a
+      routerLink="/auth/register"
+      class="btn-outline">
 
-  </form>
+      Crear cuenta nueva
 
-  <!-- Divider -->
-  <div class="divider">
-    <span>¿No tienes cuenta?</span>
+    </a>
+
+    <!-- FOOTER -->
+    <div class="login-footer">
+      © 2026 Universidad del Quindío · Portal Académico
+    </div>
+
   </div>
-
-  <!-- Register button -->
-  <a routerLink="/auth/register" class="btn-outline">
-    Crear cuenta nueva
-  </a>
 
 </div>

@@ -6,13 +6,16 @@ import { finalize } from 'rxjs';
 import Swal from 'sweetalert2';
 import { AuthService } from '../../../../services/auth.service';
 import { AlertService } from '../../../../services/alert.service';
+import { CommonModule } from '@angular/common';
+
+
 
 @Component({ 
   standalone: true,
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
-  imports: [FormsModule, RouterLink]
+  imports: [FormsModule, RouterLink, CommonModule]
 })
 export class LoginComponent {
   email = '';
