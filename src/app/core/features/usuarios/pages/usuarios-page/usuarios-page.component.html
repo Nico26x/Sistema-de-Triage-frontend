@@ -1,102 +1,194 @@
-<section>
-  <h1>Gestion de usuarios</h1>
-  <p>Administra usuarios del sistema. Proximamente podras crear, activar y desactivar usuarios.</p>
+<div class="usuarios-container">
 
-  <button type="button" (click)="refrescar()" [disabled]="loading">Actualizar</button>
-  <a *ngIf="rolActual === 'COORDINADOR'" routerLink="/dashboard/usuarios/crear-administrativo">Crear administrativo</a>
-
-  <div>
-    <input
-      type="text"
-      placeholder="Buscar por nombre, email o identificacion"
-      [(ngModel)]="terminoBusqueda"
-      (ngModelChange)="aplicarFiltros()"
-    />
-
-    <select [(ngModel)]="filtroRol" (ngModelChange)="aplicarFiltros()">
-      <option value="">Todos los roles</option>
-      <option value="ESTUDIANTE">Estudiante</option>
-      <option value="ADMINISTRATIVO">Administrativo</option>
-      <option value="COORDINADOR">Coordinador</option>
-    </select>
-
-    <select [(ngModel)]="filtroEstado" (ngModelChange)="aplicarFiltros()">
-      <option value="">Todos los estados</option>
-      <option value="ACTIVO">Activo</option>
-      <option value="INACTIVO">Inactivo</option>
-    </select>
-
-    <button type="button" (click)="limpiarFiltros()">Limpiar filtros</button>
+  <!-- ===== Header ===== -->
+  <div class="page-header">
+    <div class="page-header-left">
+      <span class="page-eyebrow">Coordinador</span>
+      <h1>Gestión de usuarios</h1>
+      <p>Administra, activa y desactiva usuarios del sistema.</p>
+    </div>
+    <div class="page-header-actions">
+      <a *ngIf="rolActual === 'COORDINADOR'" routerLink="/dashboard/usuarios/crear-administrativo" class="btn-outline">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="8.5" cy="7" r="4"/>
+          <line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/>
+        </svg>
+        Crear administrativo
+      </a>
+      <button class="btn-primary" type="button" (click)="refrescar()" [disabled]="loading">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 4 23 10 17 10"/>
+          <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+        </svg>
+        {{ loading ? 'Actualizando...' : 'Actualizar' }}
+      </button>
+    </div>
   </div>
 
-  <p>Mostrando {{ usuariosFiltrados.length }} de {{ usuarios.length }} usuarios</p>
+  <!-- ===== Filtros ===== -->
+  <div class="filters-card">
+    <div class="filters-header">
+      <span class="filters-title">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        Buscar y filtrar
+      </span>
+    </div>
 
-  <p *ngIf="loading">Cargando usuarios...</p>
-  <p *ngIf="!loading && error">{{ error }}</p>
-  <p *ngIf="!loading && errorAccion">{{ errorAccion }}</p>
-  <p *ngIf="!loading && exitoAccion">{{ exitoAccion }}</p>
-  <p *ngIf="!loading && !error && usuarios.length === 0">No hay usuarios registrados.</p>
-  <p *ngIf="!loading && !error && usuarios.length > 0 && usuariosFiltrados.length === 0">
-    No hay resultados para los filtros aplicados.
-  </p>
+    <div class="filters-grid">
+      <div class="field-group field-search">
+        <label for="busqueda">Búsqueda</label>
+        <div class="input-wrapper">
+          <svg class="input-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input
+            id="busqueda"
+            type="text"
+            placeholder="Nombre, email o identificación..."
+            [(ngModel)]="terminoBusqueda"
+            (ngModelChange)="aplicarFiltros()"
+          />
+        </div>
+      </div>
 
-  <table *ngIf="!loading && !error && usuariosFiltrados.length > 0">
-    <thead>
-      <tr>
-        <th>Nombre</th>
-        <th>Email</th>
-        <th>Identificacion</th>
-        <th>Rol</th>
-        <th>Estado</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let usuario of usuariosFiltrados">
-        <td>{{ usuario.nombre || 'Sin nombre' }}</td>
-        <td>{{ usuario.email || 'Sin email' }}</td>
-        <td>{{ usuario.identificacion || 'Sin identificacion' }}</td>
-        <td>{{ usuario.rol || 'Sin rol' }}</td>
-        <td>
-          {{ usuario.activo === true ? 'Activo' : usuario.activo === false ? 'Inactivo' : 'Sin estado' }}
-        </td>
-        <td>
-          <button
-            *ngIf="usuario.activo === true && puedeGestionarEstado(usuario)"
-            type="button"
-            (click)="desactivarUsuario(usuario)"
-            [disabled]="accionEnCurso"
-          >
-            Desactivar
-          </button>
-          <button
-            *ngIf="usuario.activo === false && puedeGestionarEstado(usuario)"
-            type="button"
-            (click)="activarUsuario(usuario)"
-            [disabled]="accionEnCurso"
-          >
-            Activar
-          </button>
-          <small *ngIf="esUsuarioAutenticado(usuario)">No puedes modificar tu propio estado</small>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+      <div class="field-group">
+        <label for="filtroRol">Rol</label>
+        <div class="select-wrapper">
+          <select id="filtroRol" [(ngModel)]="filtroRol" (ngModelChange)="aplicarFiltros()">
+            <option value="">Todos los roles</option>
+            <option value="ESTUDIANTE">Estudiante</option>
+            <option value="ADMINISTRATIVO">Administrativo</option>
+            <option value="COORDINADOR">Coordinador</option>
+          </select>
+        </div>
+      </div>
 
-  <div>
-    <article>
-      <h2>Listar usuarios</h2>
-      <p>Consulta basica de usuarios del sistema.</p>
-    </article>
+      <div class="field-group">
+        <label for="filtroEstado">Estado</label>
+        <div class="select-wrapper">
+          <select id="filtroEstado" [(ngModel)]="filtroEstado" (ngModelChange)="aplicarFiltros()">
+            <option value="">Todos los estados</option>
+            <option value="ACTIVO">Activo</option>
+            <option value="INACTIVO">Inactivo</option>
+          </select>
+        </div>
+      </div>
+    </div>
 
-    <article>
-      <h2>Crear administrativo</h2>
-      <p>Registro de nuevos administrativos en una proxima fase.</p>
-    </article>
-
-    <article>
-      <h2>Activar / desactivar usuarios</h2>
-      <p>Gestion de estado de usuarios en una proxima fase.</p>
-    </article>
+    <div class="filters-footer">
+      <span class="results-count">
+        Mostrando <strong>{{ usuariosFiltrados.length }}</strong> de <strong>{{ usuarios.length }}</strong> usuarios
+      </span>
+      <button class="btn-ghost" type="button" (click)="limpiarFiltros()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+        Limpiar filtros
+      </button>
+    </div>
   </div>
-</section>
+
+  <!-- ===== Estados ===== -->
+  <div class="state-card" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Cargando usuarios...</p>
+  </div>
+
+  <div class="state-card state-error" *ngIf="!loading && error">
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/>
+      <circle cx="12" cy="16" r=".5" fill="#dc2626"/>
+    </svg>
+    <p>{{ error }}</p>
+  </div>
+
+  <div class="state-card" *ngIf="!loading && !error && usuarios.length === 0">
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+      <circle cx="9" cy="7" r="4"/>
+    </svg>
+    <p>No hay usuarios registrados.</p>
+  </div>
+
+  <div class="state-card" *ngIf="!loading && !error && usuarios.length > 0 && usuariosFiltrados.length === 0">
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+    <p>No hay resultados para los filtros aplicados.</p>
+  </div>
+
+  <!-- ===== Tabla ===== -->
+  <div class="table-card" *ngIf="!loading && !error && usuariosFiltrados.length > 0">
+    <div class="table-header">
+      <h2>Usuarios <span class="table-count">{{ usuariosFiltrados.length }}</span></h2>
+    </div>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Identificación</th>
+            <th>Rol</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let usuario of usuariosFiltrados" [ngClass]="{'row-me': esUsuarioAutenticado(usuario)}">
+            <td class="td-nombre">
+              <div class="user-avatar">{{ usuario.nombre.charAt(0) | uppercase }}</div>
+              {{ usuario.nombre || '—' }}
+              <span class="badge-yo" *ngIf="esUsuarioAutenticado(usuario)">Tú</span>
+            </td>
+            <td class="td-secondary">{{ usuario.email || '—' }}</td>
+            <td class="td-secondary">{{ usuario.identificacion || '—' }}</td>
+            <td>
+              <span class="badge" [ngClass]="{
+                'rol-estudiante':    usuario.rol === 'ESTUDIANTE',
+                'rol-admin':         usuario.rol === 'ADMINISTRATIVO',
+                'rol-coordinador':   usuario.rol === 'COORDINADOR'
+              }">{{ usuario.rol || '—' }}</span>
+            </td>
+            <td>
+              <span class="badge" [ngClass]="usuario.activo ? 'estado-activo' : 'estado-inactivo'">
+                {{ usuario.activo ? 'Activo' : 'Inactivo' }}
+              </span>
+            </td>
+            <td class="td-actions">
+              <button
+                *ngIf="usuario.activo === true && puedeGestionarEstado(usuario)"
+                class="btn-danger-sm"
+                type="button"
+                (click)="desactivarUsuario(usuario)"
+                [disabled]="accionEnCurso"
+                title="Desactivar usuario">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/>
+                </svg>
+                Desactivar
+              </button>
+              <button
+                *ngIf="usuario.activo === false && puedeGestionarEstado(usuario)"
+                class="btn-success-sm"
+                type="button"
+                (click)="activarUsuario(usuario)"
+                [disabled]="accionEnCurso"
+                title="Activar usuario">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
+                </svg>
+                Activar
+              </button>
+              <small class="td-yo" *ngIf="esUsuarioAutenticado(usuario)">No puedes modificar tu propio estado</small>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
