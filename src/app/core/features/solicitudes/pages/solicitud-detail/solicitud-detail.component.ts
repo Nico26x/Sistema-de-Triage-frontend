@@ -7,6 +7,7 @@ import { finalize } from 'rxjs';
 import { SolicitudService } from '../../../../services/solicitud.service';
 import { UsuarioService } from '../../../../services/usuario.service';
 import { AuthService } from '../../../../services/auth.service';
+import { AlertService } from '../../../../services/alert.service';
 import { EstadoSolicitud, ImpactoAcademico, TipoSolicitudNombre } from '../../../../models/enums.models';
 import { AsignarResponsableRequest, CambiarEstadoSolicitudRequest, CerrarSolicitudRequest, ClasificarSolicitudRequest, SolicitudHistorialResponse, SolicitudResponse } from '../../../../models/solicitud.models';
 import { UsuarioResponse } from '../../../../models/usuario.models';
@@ -24,6 +25,7 @@ export class SolicitudDetailComponent implements OnInit {
   private solicitudService = inject(SolicitudService);
   private usuarioService = inject(UsuarioService);
   private authService = inject(AuthService);
+  private alertService = inject(AlertService);
   private cdr = inject(ChangeDetectorRef);
 
   solicitud: SolicitudResponse | null = null;
@@ -117,15 +119,15 @@ export class SolicitudDetailComponent implements OnInit {
   obtenerMensajeEstadoAdministrativo(): string {
     switch (this.solicitud?.estado) {
       case 'REGISTRADA':
-        return 'Esta solicitud esta pendiente de clasificacion.';
+        return 'Esta solicitud está pendiente de clasificación.';
       case 'CLASIFICADA':
-        return 'La solicitud ya fue clasificada. Puedes iniciar su atencion.';
+        return 'La solicitud ya fue clasificada. Puedes iniciar su atención.';
       case 'EN_ATENCION':
-        return 'La solicitud esta en atencion. Cuando finalice la gestion, marcala como atendida.';
+        return 'La solicitud está en atención. Cuando finalice la gestión, márcala como atendida.';
       case 'ATENDIDA':
-        return 'La solicitud ya fue atendida. Queda pendiente de cierre por coordinacion.';
+        return 'La solicitud ya fue atendida. Queda pendiente de cierre por coordinación.';
       case 'CERRADA':
-        return 'La solicitud esta cerrada. Solo lectura.';
+        return 'La solicitud está cerrada. Solo lectura.';
       default:
         return '';
     }
@@ -161,7 +163,7 @@ export class SolicitudDetailComponent implements OnInit {
 
   cargarDetalle(): void {
     if (this.solicitudId === null) {
-      this.error = 'El identificador de solicitud no es valido.';
+      this.error = 'El identificador de solicitud no es válido.';
       this.solicitud = null;
       this.loading = false;
       this.cdr.detectChanges();
@@ -189,18 +191,20 @@ export class SolicitudDetailComponent implements OnInit {
         error: (error: unknown) => {
           this.solicitud = null;
           this.error = this.obtenerMensajeError(error);
+          this.alertService.error('Error al cargar el detalle', this.error);
           this.cdr.detectChanges();
         }
       });
   }
 
   actualizarDetalle(): void {
+    this.alertService.toast('info', 'Actualizando detalle...');
     this.cargarDetalle();
   }
 
   cargarHistorial(): void {
     if (this.solicitudId === null) {
-      this.errorHistorial = 'El identificador de solicitud no es valido para consultar el historial.';
+      this.errorHistorial = 'El identificador de solicitud no es válido para consultar el historial.';
       this.historial = [];
       this.cdr.detectChanges();
       return;
@@ -232,12 +236,14 @@ export class SolicitudDetailComponent implements OnInit {
         error: (error: unknown) => {
           this.historial = [];
           this.errorHistorial = this.obtenerMensajeErrorHistorial(error);
+          this.alertService.error('Error al cargar historial', this.errorHistorial);
           this.cdr.detectChanges();
         }
       });
   }
 
   actualizarHistorial(): void {
+    this.alertService.toast('info', 'Actualizando historial...');
     this.cargarHistorial();
   }
 
@@ -286,12 +292,14 @@ export class SolicitudDetailComponent implements OnInit {
 
     if (!this.solicitud?.id) {
       this.errorAsignacion = 'No se pudo identificar la solicitud.';
+      this.alertService.toast('error', 'No se pudo identificar la solicitud');
       this.cdr.detectChanges();
       return;
     }
 
     if (!this.puedeAsignarResponsable()) {
       this.errorAsignacion = 'No tienes permisos para asignar responsable.';
+      this.alertService.toast('warning', 'No tienes permisos para esta acción');
       this.cdr.detectChanges();
       return;
     }
@@ -299,6 +307,7 @@ export class SolicitudDetailComponent implements OnInit {
     const errorValidacion = this.validarFormularioAsignacion();
     if (errorValidacion) {
       this.errorAsignacion = errorValidacion;
+      this.alertService.toast('error', errorValidacion);
       this.cdr.detectChanges();
       return;
     }
@@ -322,6 +331,7 @@ export class SolicitudDetailComponent implements OnInit {
           this.exitoAsignacion = 'Responsable asignado correctamente.';
           this.errorAsignacion = '';
           this.asignacionForm.responsableId = null;
+          this.alertService.toast('success', 'Responsable asignado exitosamente');
           this.cargarDetalle();
           this.cargarHistorial();
           this.cdr.detectChanges();
@@ -329,6 +339,7 @@ export class SolicitudDetailComponent implements OnInit {
         error: (error: unknown) => {
           this.errorAsignacion = this.obtenerMensajeErrorAsignacion(error);
           this.exitoAsignacion = '';
+          this.alertService.error('Error al asignar responsable', this.errorAsignacion);
           this.cdr.detectChanges();
         }
       });
@@ -340,12 +351,14 @@ export class SolicitudDetailComponent implements OnInit {
 
     if (!this.solicitud?.id) {
       this.errorClasificacion = 'No se pudo identificar la solicitud a clasificar.';
+      this.alertService.toast('error', 'No se pudo identificar la solicitud');
       this.cdr.detectChanges();
       return;
     }
 
     if (!this.puedeClasificar()) {
       this.errorClasificacion = 'Esta solicitud no puede clasificarse en su estado actual.';
+      this.alertService.toast('warning', 'Esta solicitud no puede clasificarse');
       this.cdr.detectChanges();
       return;
     }
@@ -353,6 +366,7 @@ export class SolicitudDetailComponent implements OnInit {
     const errorValidacion = this.validarFormularioClasificacion();
     if (errorValidacion) {
       this.errorClasificacion = errorValidacion;
+      this.alertService.toast('error', errorValidacion);
       this.cdr.detectChanges();
       return;
     }
@@ -384,6 +398,7 @@ export class SolicitudDetailComponent implements OnInit {
             fechaLimite: '',
             observacion: ''
           };
+          this.alertService.toast('success', 'Solicitud clasificada exitosamente');
           this.cargarDetalle();
           this.cargarHistorial();
           this.cdr.detectChanges();
@@ -391,6 +406,7 @@ export class SolicitudDetailComponent implements OnInit {
         error: (error: unknown) => {
           this.exitoClasificacion = '';
           this.errorClasificacion = this.obtenerMensajeErrorClasificacion(error);
+          this.alertService.error('Error al clasificar', this.errorClasificacion);
           this.cdr.detectChanges();
         }
       });
@@ -402,12 +418,14 @@ export class SolicitudDetailComponent implements OnInit {
 
     if (!this.solicitud?.id) {
       this.errorCambioEstado = 'No se pudo identificar la solicitud.';
+      this.alertService.toast('error', 'No se pudo identificar la solicitud');
       this.cdr.detectChanges();
       return;
     }
 
     if (!this.puedeCambiarEstado()) {
       this.errorCambioEstado = 'Esta solicitud no puede cambiar de estado en su estado actual.';
+      this.alertService.toast('warning', 'No se puede cambiar el estado en este momento');
       this.cdr.detectChanges();
       return;
     }
@@ -415,6 +433,7 @@ export class SolicitudDetailComponent implements OnInit {
     const errorValidacion = this.validarFormularioCambioEstado();
     if (errorValidacion) {
       this.errorCambioEstado = errorValidacion;
+      this.alertService.toast('error', errorValidacion);
       this.cdr.detectChanges();
       return;
     }
@@ -442,6 +461,7 @@ export class SolicitudDetailComponent implements OnInit {
             nuevoEstado: '',
             observacion: ''
           };
+          this.alertService.toast('success', 'Estado actualizado exitosamente');
           this.cargarDetalle();
           this.cargarHistorial();
           this.cdr.detectChanges();
@@ -449,6 +469,7 @@ export class SolicitudDetailComponent implements OnInit {
         error: (error: unknown) => {
           this.errorCambioEstado = this.obtenerMensajeErrorCambioEstado(error);
           this.exitoCambioEstado = '';
+          this.alertService.error('Error al cambiar estado', this.errorCambioEstado);
           this.cdr.detectChanges();
         }
       });
@@ -460,12 +481,14 @@ export class SolicitudDetailComponent implements OnInit {
 
     if (!this.solicitud?.id) {
       this.errorCierre = 'No se pudo identificar la solicitud.';
+      this.alertService.toast('error', 'No se pudo identificar la solicitud');
       this.cdr.detectChanges();
       return;
     }
 
     if (!this.puedeCerrarSolicitud()) {
       this.errorCierre = 'Esta solicitud no puede cerrarse en su estado actual.';
+      this.alertService.toast('warning', 'Esta solicitud no puede cerrarse');
       this.cdr.detectChanges();
       return;
     }
@@ -473,7 +496,26 @@ export class SolicitudDetailComponent implements OnInit {
     const errorValidacion = this.validarFormularioCierre();
     if (errorValidacion) {
       this.errorCierre = errorValidacion;
+      this.alertService.toast('error', errorValidacion);
       this.cdr.detectChanges();
+      return;
+    }
+
+    // Mostrar confirmación antes de cerrar
+    this.alertService.confirmDanger(
+      '¿Cerrar solicitud?',
+      'Esta acción cerrará la solicitud permanentemente. Esta acción no se puede deshacer.',
+      'Sí, cerrar',
+      'Cancelar'
+    ).then(result => {
+      if (result.isConfirmed) {
+        this.procesarCierre();
+      }
+    });
+  }
+
+  private procesarCierre(): void {
+    if (!this.solicitud?.id) {
       return;
     }
 
@@ -498,6 +540,7 @@ export class SolicitudDetailComponent implements OnInit {
           this.cierreForm = {
             observacion: ''
           };
+          this.alertService.toast('success', 'Solicitud cerrada exitosamente');
           this.cargarDetalle();
           this.cargarHistorial();
           this.cdr.detectChanges();
@@ -505,6 +548,7 @@ export class SolicitudDetailComponent implements OnInit {
         error: (error: unknown) => {
           this.errorCierre = this.obtenerMensajeErrorCierre(error);
           this.exitoCierre = '';
+          this.alertService.error('Error al cerrar solicitud', this.errorCierre);
           this.cdr.detectChanges();
         }
       });
@@ -519,10 +563,11 @@ export class SolicitudDetailComponent implements OnInit {
     const id = Number(idParam);
 
     if (!idParam || Number.isNaN(id) || id <= 0) {
-      this.error = 'El identificador de solicitud no es valido.';
+      this.error = 'El identificador de solicitud no es válido.';
       this.solicitud = null;
       this.loading = false;
       this.solicitudId = null;
+      this.alertService.error('ID inválido', this.error);
       this.cdr.detectChanges();
       return;
     }
@@ -540,11 +585,11 @@ export class SolicitudDetailComponent implements OnInit {
     }
 
     if (error.status === 401 || error.status === 403) {
-      return 'Tu sesion expiro o no tienes permisos para ver esta solicitud.';
+      return 'Tu sesión expiró o no tienes permisos para ver esta solicitud.';
     }
 
     if (error.status === 404) {
-      return 'No se encontro la solicitud solicitada.';
+      return 'No se encontró la solicitud solicitada.';
     }
 
     if (error.status >= 500) {
@@ -564,11 +609,11 @@ export class SolicitudDetailComponent implements OnInit {
     }
 
     if (error.status === 401 || error.status === 403) {
-      return 'Tu sesion expiro o no tienes permisos para ver el historial.';
+      return 'Tu sesión expiró o no tienes permisos para ver el historial.';
     }
 
     if (error.status === 404) {
-      return 'No se encontro el historial de esta solicitud.';
+      return 'No se encontró el historial de esta solicitud.';
     }
 
     if (error.status >= 500) {
@@ -635,15 +680,15 @@ export class SolicitudDetailComponent implements OnInit {
     }
 
     if (!this.clasificacionForm.impacto) {
-      return 'Debes seleccionar el impacto academico.';
+      return 'Debes seleccionar el impacto académico.';
     }
 
     if (!this.clasificacionForm.fechaLimite?.trim()) {
-      return 'Debes seleccionar la fecha limite.';
+      return 'Debes seleccionar la fecha límite.';
     }
 
     if (this.clasificacionForm.observacion && this.clasificacionForm.observacion.length > 500) {
-      return 'La observacion no puede superar los 500 caracteres.';
+      return 'La observación no puede superar los 500 caracteres.';
     }
 
     return '';
@@ -657,11 +702,11 @@ export class SolicitudDetailComponent implements OnInit {
     const estadosPermitidos = this.obtenerEstadosPermitidosParaCambio();
 
     if (!estadosPermitidos.includes(this.cambioEstadoForm.nuevoEstado as EstadoSolicitud)) {
-      return 'El estado seleccionado no es valido para esta solicitud.';
+      return 'El estado seleccionado no es válido para esta solicitud.';
     }
 
     if (this.cambioEstadoForm.observacion && this.cambioEstadoForm.observacion.length > 500) {
-      return 'La observacion no puede superar los 500 caracteres.';
+      return 'La observación no puede superar los 500 caracteres.';
     }
 
     return '';
@@ -671,15 +716,15 @@ export class SolicitudDetailComponent implements OnInit {
     const observacion = this.cierreForm.observacion?.trim() || '';
 
     if (!observacion) {
-      return 'La observacion de cierre es obligatoria.';
+      return 'La observación de cierre es obligatoria.';
     }
 
     if (observacion.length < 5) {
-      return 'La observacion debe tener minimo 5 caracteres.';
+      return 'La observación debe tener mínimo 5 caracteres.';
     }
 
     if (observacion.length > 500) {
-      return 'La observacion no puede superar los 500 caracteres.';
+      return 'La observación no puede superar los 500 caracteres.';
     }
 
     return '';
@@ -687,7 +732,7 @@ export class SolicitudDetailComponent implements OnInit {
 
   private validarFormularioAsignacion(): string {
     if (!this.asignacionForm.responsableId || this.asignacionForm.responsableId <= 0) {
-      return 'Debes seleccionar un responsable valido.';
+      return 'Debes seleccionar un responsable válido.';
     }
 
     return '';
@@ -699,7 +744,7 @@ export class SolicitudDetailComponent implements OnInit {
     }
 
     if (error.status === 400) {
-      return 'Datos invalidos. Revisa el tipo, impacto y fecha limite.';
+      return 'Datos inválidos. Revisa el tipo, impacto y fecha límite.';
     }
 
     if (error.status === 403) {
@@ -711,7 +756,7 @@ export class SolicitudDetailComponent implements OnInit {
     }
 
     if (error.status === 409) {
-      return 'La solicitud no puede clasificarse porque no esta en estado REGISTRADA o falta informacion requerida.';
+      return 'La solicitud no puede clasificarse porque no está en estado REGISTRADA o falta información requerida.';
     }
 
     if (error.status >= 500) {
@@ -727,7 +772,7 @@ export class SolicitudDetailComponent implements OnInit {
     }
 
     if (error.status === 400) {
-      return 'Datos invalidos. Revisa el nuevo estado seleccionado.';
+      return 'Datos inválidos. Revisa el nuevo estado seleccionado.';
     }
 
     if (error.status === 403) {
@@ -739,7 +784,7 @@ export class SolicitudDetailComponent implements OnInit {
     }
 
     if (error.status === 409) {
-      return 'No se puede realizar esta transicion de estado.';
+      return 'No se puede realizar esta transición de estado.';
     }
 
     if (error.status >= 500) {
@@ -755,7 +800,7 @@ export class SolicitudDetailComponent implements OnInit {
     }
 
     if (error.status === 400) {
-      return 'La observacion es obligatoria y debe tener entre 5 y 500 caracteres.';
+      return 'La observación es obligatoria y debe tener entre 5 y 500 caracteres.';
     }
 
     if (error.status === 403) {
@@ -767,7 +812,7 @@ export class SolicitudDetailComponent implements OnInit {
     }
 
     if (error.status === 409) {
-      return 'La solicitud no puede cerrarse porque no esta en estado ATENDIDA o ya fue cerrada.';
+      return 'La solicitud no puede cerrarse porque no está en estado ATENDIDA o ya fue cerrada.';
     }
 
     if (error.status >= 500) {
@@ -783,7 +828,7 @@ export class SolicitudDetailComponent implements OnInit {
     }
 
     if (error.status === 400) {
-      return 'Debes seleccionar un responsable valido.';
+      return 'Debes seleccionar un responsable válido.';
     }
 
     if (error.status === 403) {
@@ -795,7 +840,7 @@ export class SolicitudDetailComponent implements OnInit {
     }
 
     if (error.status === 409) {
-      return 'No se puede asignar responsable porque la solicitud esta cerrada o el responsable esta inactivo.';
+      return 'No se puede asignar responsable porque la solicitud está cerrada o el responsable está inactivo.';
     }
 
     if (error.status >= 500) {
