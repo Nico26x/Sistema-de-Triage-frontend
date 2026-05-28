@@ -1,11 +1,12 @@
 /* ===== HOST ===== */
 :host {
-    min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px;
-    overflow: hidden;
+    padding: clamp(14px, 2.2vw, 28px);
+    overflow-x: hidden;
+    overflow-y: auto;
     position: relative;
     font-family: 'Inter', 'Segoe UI', sans-serif;
     background:
@@ -17,11 +18,11 @@
 /* ===== CARD ===== */
 .register-card {
     position: relative;
-    width: 100%;
-    max-width: 780px;        /* ← antes 800px */
+    width: min(94vw, 1100px);
+    max-width: 1100px;
     display: grid;
-    grid-template-columns: 0.72fr 1fr;
-    border-radius: 22px;
+    grid-template-columns: 0.9fr 1.1fr;
+    border-radius: 24px;
     overflow: hidden;
     background: rgba(255, 255, 255, 0.72);
     backdrop-filter: blur(18px);
@@ -33,7 +34,7 @@
     position: relative;
     background: linear-gradient(180deg, #0B6E4F 0%, #145c47 100%);
     color: white;
-    padding: 32px 28px;      /* ← antes 46px */
+    padding: clamp(28px, 3vw, 50px) clamp(22px, 2.7vw, 42px);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -53,8 +54,8 @@
 
 /* ===== LOGO ===== */
 .brand-badge {
-    width: 68px;             /* ← antes 92px */
-    height: 68px;
+    width: clamp(68px, 6.8vw, 92px);
+    height: clamp(68px, 6.8vw, 92px);
     border-radius: 20px;
     background: rgba(255,255,255,0.12);
     display: flex;
@@ -72,13 +73,13 @@
 .left-badge {
     display: inline-block;
     margin-bottom: 10px;     /* ← antes 18px */
-    font-size: 0.78rem;      /* ← antes 1rem */
+    font-size: clamp(0.82rem, 0.8vw, 0.98rem);
     font-weight: 500;
     opacity: 0.95;
 }
 
 .register-left h1 {
-    font-size: 2.2rem;       /* ← antes 3.2rem */
+    font-size: clamp(1.9rem, 3.2vw, 3.15rem);
     line-height: 1;
     font-weight: 900;
     margin: 0 0 16px;        /* ← antes 28px */
@@ -86,7 +87,7 @@
 }
 
 .register-left p {
-    font-size: 0.82rem;      /* ← antes 1.08rem */
+    font-size: clamp(0.9rem, 1vw, 1.04rem);
     line-height: 1.6;
     opacity: 0.85;
     margin-bottom: 22px;     /* ← antes 34px */
@@ -98,24 +99,26 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    font-size: 0.8rem;       /* ← antes 1rem */
+    font-size: clamp(0.86rem, 0.9vw, 0.98rem);
     font-weight: 500;
     color: rgba(255,255,255,0.92);
 }
 
 .feature-icon {
-    width: 24px; height: 24px; min-width: 24px; /* ← antes 30px */
+    width: clamp(24px, 2.2vw, 30px);
+    height: clamp(24px, 2.2vw, 30px);
+    min-width: clamp(24px, 2.2vw, 30px);
     border-radius: 50%;
     background: rgba(255,255,255,0.12);
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
 }
 
-.feature-icon svg { width: 12px; height: 12px; display: block; }
+.feature-icon svg { width: clamp(12px, 1.1vw, 14px); height: clamp(12px, 1.1vw, 14px); display: block; }
 
 /* ===== RIGHT SIDE ===== */
 .register-right {
-    padding: 32px 36px;      /* ← antes 46px */
+    padding: clamp(26px, 2.9vw, 48px) clamp(22px, 2.8vw, 44px);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -128,14 +131,14 @@
     display: inline-block;
     margin-bottom: 8px;      /* ← antes 14px */
     color: #0B6E4F;
-    font-size: 0.7rem;       /* ← antes 0.78rem */
+    font-size: clamp(0.72rem, 0.74vw, 0.82rem);
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.18em;
 }
 
 .register-title {
-    font-size: 2rem;         /* ← antes 3rem */
+    font-size: clamp(1.9rem, 3vw, 2.9rem);
     font-weight: 900;
     letter-spacing: -1.5px;
     margin: 0 0 8px;
@@ -146,7 +149,7 @@
 
 .register-subtitle {
     color: #6b7280;
-    font-size: 0.82rem;      /* ← antes 1rem */
+    font-size: clamp(0.9rem, 0.95vw, 1.02rem);
     line-height: 1.5;
 }
 
@@ -173,6 +176,7 @@
 }
 
 .step-label { font-size: 0.8rem; font-weight: 600; color: #9ca3af; }
+.step-label { font-size: clamp(0.82rem, 0.84vw, 0.95rem); font-weight: 600; color: #9ca3af; }
 .step.active .step-label { color: #0B6E4F; }
 .step-line { flex: 1; height: 2px; background: #e5e7eb; margin: 0 10px; }
 
@@ -182,6 +186,7 @@ form { display: flex; flex-direction: column; gap: 14px; } /* ← antes 22px */
 .field-group { display: flex; flex-direction: column; gap: 6px; } /* ← antes 10px */
 
 label { font-size: 0.8rem; font-weight: 700; color: #1f2937; } /* ← antes 0.92rem */
+label { font-size: clamp(0.82rem, 0.84vw, 0.92rem); font-weight: 700; color: #1f2937; }
 
 /* ===== INPUT ===== */
 .input-wrapper { position: relative; }
@@ -196,13 +201,14 @@ label { font-size: 0.8rem; font-weight: 700; color: #1f2937; } /* ← antes 0.92
 
 input {
     width: 100%;
-    height: 46px;            /* ← antes 58px */
+    min-height: 48px;
+    height: clamp(48px, 4.2vw, 56px);
     border-radius: 12px;     /* ← antes 18px */
     border: 1.5px solid #e5e7eb;
     background: rgba(255,255,255,0.72);
     backdrop-filter: blur(10px);
     padding: 0 14px 0 42px;
-    font-size: 0.88rem;      /* ← antes 0.96rem */
+    font-size: clamp(0.92rem, 1vw, 1rem);
     transition: all .25s ease;
     box-sizing: border-box;
 }
@@ -231,12 +237,13 @@ input:focus {
 
 /* ===== BUTTON ===== */
 .btn-primary {
-    height: 48px;            /* ← antes 58px */
+    min-height: 48px;
+    height: clamp(48px, 4.1vw, 56px);
     border: none;
     border-radius: 12px;     /* ← antes 18px */
     background: linear-gradient(135deg, #0B6E4F, #15805d);
     color: white;
-    font-size: 0.92rem;      /* ← antes 1rem */
+    font-size: clamp(0.94rem, 1vw, 1rem);
     font-weight: 700;
     cursor: pointer;
     transition: all .25s ease;
@@ -259,53 +266,103 @@ input:focus {
 /* ===== RESPONSIVE ===== */
 
 /* Tablets grandes (1024px) */
+@media (max-width: 1180px) {
+  .register-card {
+    width: min(95vw, 1000px);
+    grid-template-columns: 0.86fr 1.14fr;
+  }
+}
+
 @media (max-width: 1024px) {
   .register-card {
-    max-width: 700px;
+    width: min(95vw, 900px);
+    grid-template-columns: 0.85fr 1.15fr;
   }
 }
 
 /* Tablets (768px) */
-@media (max-width: 768px) {
-  :host { padding: 16px; }
+@media (max-width: 860px) {
+  :host {
+    align-items: flex-start;
+    padding: clamp(10px, 3vw, 16px);
+  }
 
   .register-card {
     grid-template-columns: 1fr;
-    max-width: 480px;
+    width: min(96vw, 680px);
     border-radius: 18px;
   }
 
-  .register-left { display: none; }
-
-  .register-right {
-    padding: 36px 28px;
+  .register-left {
+    display: flex;
+    padding: 18px 20px;
+    animation: none;
   }
 
-  .register-title { font-size: 1.8rem; }
+  .left-content p,
+  .feature-list {
+    display: none;
+  }
+
+  .brand-badge {
+    width: 56px;
+    height: 56px;
+    margin-bottom: 12px;
+  }
+
+  .left-badge {
+    margin-bottom: 6px;
+    font-size: 0.74rem;
+  }
+
+  .register-left h1 {
+    font-size: clamp(1.3rem, 4.8vw, 1.8rem);
+    margin: 0;
+    letter-spacing: -0.5px;
+  }
+
+  .register-right {
+    padding: 24px 20px 28px;
+  }
+
+  .register-title { font-size: clamp(1.55rem, 5vw, 2rem); }
 }
 
 /* Móviles grandes (480px) */
 @media (max-width: 480px) {
-  :host { padding: 0; align-items: flex-end; }
+  :host {
+    padding: 0;
+    align-items: stretch;
+  }
 
   .register-card {
-    max-width: 100%;
-    border-radius: 24px 24px 0 0;  /* ← efecto bottom sheet */
-    min-height: 90vh;
+    width: 100%;
+    border-radius: 18px 18px 0 0;
+    min-height: 100dvh;
+  }
+
+  .register-left {
+    padding: 14px 16px;
+  }
+
+  .brand-badge {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 10px;
   }
 
   .register-right {
-    padding: 32px 20px 40px;
+    padding: 22px 14px 28px;
     justify-content: flex-start;
-    padding-top: 36px;
+    padding-top: 22px;
     overflow-y: auto;
   }
 
-  .register-title { font-size: 1.6rem; }
+  .register-title { font-size: clamp(1.35rem, 6vw, 1.7rem); }
 
-  input { height: 50px; font-size: 1rem; }
+  input { min-height: 48px; height: 50px; font-size: 1rem; }
 
-  .btn-primary { height: 50px; font-size: 1rem; }
+  .btn-primary { min-height: 48px; height: 50px; font-size: 1rem; }
 
   form { gap: 12px; }
 }
