@@ -1,7 +1,5 @@
 <div class="dashboard-wrapper">
 
-
-
   <!-- ===== MAIN ===== -->
   <main class="main-content">
 
@@ -14,9 +12,10 @@
           <p>Gestiona tus solicitudes académicas desde aquí.</p>
         </div>
         <button class="btn-primary" (click)="goToSolicitudes()">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-               stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
           </svg>
           Nueva solicitud
         </button>
@@ -25,23 +24,130 @@
       <div class="stats-grid">
         <div class="stat-card">
           <span class="stat-icon">📋</span>
-          <span class="stat-label">Mis solicitudes</span>
-          <span class="stat-value">{{ loadingSolicitudes ? '—' : misSolicitudesCount }}</span>
+          <span class="stat-label">Total de solicitudes</span>
+          <span class="stat-value">{{ misSolicitudesCount || '—' }}</span>
         </div>
         <div class="stat-card">
           <span class="stat-icon">🔄</span>
           <span class="stat-label">En atención</span>
-          <span class="stat-value accent-blue">{{ loadingSolicitudes ? '—' : enAtencionCount }}</span>
+          <span class="stat-value accent-blue">{{ enAtencionCount || '—' }}</span>
         </div>
         <div class="stat-card">
           <span class="stat-icon">✅</span>
           <span class="stat-label">Atendidas</span>
-          <span class="stat-value accent-green">{{ loadingSolicitudes ? '—' : atendidasCount }}</span>
+          <span class="stat-value accent-green">{{ atendidasCount || '—' }}</span>
         </div>
         <div class="stat-card">
           <span class="stat-icon">🗃️</span>
           <span class="stat-label">Cerradas</span>
-          <span class="stat-value accent-gray">{{ loadingSolicitudes ? '—' : cerradasCount }}</span>
+          <span class="stat-value accent-gray">{{ cerradasCount || '—' }}</span>
+        </div>
+      </div>
+
+      <!-- Acceso rápido a solicitudes -->
+      <div class="section-card">
+        <div class="section-header">
+          <h2>Tus solicitudes recientes</h2>
+          <button class="btn-link" (click)="goToSolicitudes()">Ver todas →</button>
+        </div>
+        <div class="solicitudes-preview">
+          <ng-container *ngIf="solicitudes.length > 0">
+            <div class="solicitud-preview-item" *ngFor="let solicitud of solicitudes.slice(0, 3)">
+              <div class="solicitud-preview-header">
+                <span class="solicitud-id">#{{ solicitud.id }}</span>
+                <span class="solicitud-estado" [ngClass]="'estado-' + (solicitud.estado | lowercase)">
+                  {{ solicitud.estado }}
+                </span>
+              </div>
+              <p class="solicitud-tipo">{{ solicitud.tipoSolicitud }}</p>
+              <div class="solicitud-footer">
+                <span class="solicitud-fecha">{{ solicitud.fechaRegistro | date: 'dd/MM/yyyy' }}</span>
+                <span class="solicitud-prioridad" [ngClass]="'prioridad-' + (solicitud.prioridad | lowercase)">
+                  {{ solicitud.prioridad }}
+                </span>
+              </div>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="solicitudes.length === 0">
+            <div class="empty-preview">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="9" y1="13" x2="15" y2="13" />
+                <line x1="9" y1="17" x2="12" y2="17" />
+              </svg>
+              <p>No tienes solicitudes registradas aún</p>
+              <button class="btn-secondary" (click)="goToSolicitudes()">Crear una solicitud</button>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+
+      <!-- Próximos pasos -->
+      <div class="two-col">
+        <div class="section-card">
+          <div class="section-header">
+            <h2>Guía rápida</h2>
+          </div>
+          <div class="guide-list">
+            <div class="guide-item">
+              <span class="guide-number">1</span>
+              <div>
+                <span class="guide-title">Crea una solicitud</span>
+                <span class="guide-desc">Accede a "Nueva solicitud" para iniciar el proceso</span>
+              </div>
+            </div>
+            <div class="guide-item">
+              <span class="guide-number">2</span>
+              <div>
+                <span class="guide-title">Proporciona información</span>
+                <span class="guide-desc">Completa todos los detalles requeridos</span>
+              </div>
+            </div>
+            <div class="guide-item">
+              <span class="guide-number">3</span>
+              <div>
+                <span class="guide-title">Monitorea el estado</span>
+                <span class="guide-desc">Sigue el progreso en "Mis solicitudes"</span>
+              </div>
+            </div>
+            <div class="guide-item">
+              <span class="guide-number">4</span>
+              <div>
+                <span class="guide-title">Recibe respuesta</span>
+                <span class="guide-desc">Serás notificado cuando se complete</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="section-header">
+            <h2>Estados de solicitud</h2>
+          </div>
+          <div class="status-legend">
+            <div class="legend-item">
+              <span class="legend-badge estado-registrada">Registrada</span>
+              <span class="legend-desc">Tu solicitud fue creada</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-badge estado-clasificada">Clasificada</span>
+              <span class="legend-desc">Fue asignada a un área</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-badge estado-en_atencion">En atención</span>
+              <span class="legend-desc">Alguien está trabajando en ello</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-badge estado-atendida">Atendida</span>
+              <span class="legend-desc">Tu solicitud fue procesada</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-badge estado-cerrada">Cerrada</span>
+              <span class="legend-desc">Proceso completado</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -56,10 +162,10 @@
           <p>Clasifica, prioriza y gestiona las solicitudes entrantes.</p>
         </div>
         <button class="btn-primary" (click)="goToSolicitudes()">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="3" width="18" height="18" rx="2"/>
-            <path d="M3 9h18M9 21V9"/>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" />
+            <path d="M3 9h18M9 21V9" />
           </svg>
           Gestionar solicitudes
         </button>
@@ -69,22 +175,22 @@
         <div class="stat-card">
           <span class="stat-icon">📥</span>
           <span class="stat-label">Registradas</span>
-          <span class="stat-value accent-orange">{{ loadingSolicitudes ? '—' : registradasCount }}</span>
+          <span class="stat-value accent-orange">{{ registradasCount || '—' }}</span>
         </div>
         <div class="stat-card">
           <span class="stat-icon">🔄</span>
           <span class="stat-label">En atención</span>
-          <span class="stat-value accent-blue">{{ loadingSolicitudes ? '—' : enAtencionCount }}</span>
+          <span class="stat-value accent-blue">{{ enAtencionCount || '—' }}</span>
         </div>
         <div class="stat-card">
           <span class="stat-icon">🚨</span>
           <span class="stat-label">Críticas</span>
-          <span class="stat-value accent-red">{{ loadingSolicitudes ? '—' : criticasCount }}</span>
+          <span class="stat-value accent-red">{{ criticasCount || '—' }}</span>
         </div>
         <div class="stat-card">
           <span class="stat-icon">✅</span>
           <span class="stat-label">Atendidas hoy</span>
-          <span class="stat-value accent-green">{{ loadingSolicitudes ? '—' : atendidasHoyCount }}</span>
+          <span class="stat-value accent-green">{{ atendidasHoyCount || '—' }}</span>
         </div>
       </div>
 
@@ -94,37 +200,40 @@
             <h2>Acciones rápidas</h2>
           </div>
           <div class="action-list">
-            <button class="action-item" (click)="goToSolicitudes()">
+            <button class="action-item action-item-primary" (click)="goToSolicitudes()">
               <span class="action-icon">📋</span>
               <div>
-                <span class="action-title">Ver solicitudes activas</span>
-                <span class="action-sub">Clasifica y prioriza las pendientes</span>
+                <span class="action-title">Solicitudes por clasificar</span>
+                <span class="action-sub">{{ registradasCount }} pendientes de clasificación</span>
               </div>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af"
-                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="9 18 15 12 9 6"/>
+              <span class="action-badge">{{ registradasCount }}</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6" />
               </svg>
             </button>
-            <button class="action-item" (click)="goToSolicitudes()">
+            <button class="action-item action-item-warning" (click)="goToSolicitudes()">
               <span class="action-icon">⚡</span>
               <div>
                 <span class="action-title">Solicitudes críticas</span>
-                <span class="action-sub">Revisión inmediata requerida</span>
+                <span class="action-sub">{{ criticasCount }} requieren atención inmediata</span>
               </div>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af"
-                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="9 18 15 12 9 6"/>
+              <span class="action-badge action-badge-red">{{ criticasCount }}</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6" />
               </svg>
             </button>
-            <button class="action-item" (click)="goToSolicitudes()">
-              <span class="action-icon">🕐</span>
+            <button class="action-item action-item-info" (click)="goToSolicitudes()">
+              <span class="action-icon">🔄</span>
               <div>
-                <span class="action-title">Historial de acciones</span>
-                <span class="action-sub">Revisar cambios recientes</span>
+                <span class="action-title">En atención</span>
+                <span class="action-sub">{{ enAtencionCount }} solicitudes siendo gestionadas</span>
               </div>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af"
-                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="9 18 15 12 9 6"/>
+              <span class="action-badge action-badge-blue">{{ enAtencionCount }}</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6" />
               </svg>
             </button>
           </div>
@@ -138,22 +247,27 @@
             <div class="status-row">
               <span class="badge estado-registrada">Registrada</span>
               <span class="status-desc">Pendiente de clasificación</span>
+              <span class="status-count">{{ registradasCount }}</span>
             </div>
             <div class="status-row">
               <span class="badge estado-clasificada">Clasificada</span>
               <span class="status-desc">Tipo y prioridad asignados</span>
+              <span class="status-count">—</span>
             </div>
             <div class="status-row">
               <span class="badge estado-en_atencion">En atención</span>
               <span class="status-desc">Responsable asignado</span>
+              <span class="status-count">{{ enAtencionCount }}</span>
             </div>
             <div class="status-row">
               <span class="badge estado-atendida">Atendida</span>
               <span class="status-desc">Respuesta entregada</span>
+              <span class="status-count">{{ atendidasCount }}</span>
             </div>
             <div class="status-row">
               <span class="badge estado-cerrada">Cerrada</span>
               <span class="status-desc">Proceso completado</span>
+              <span class="status-count">{{ cerradasCount }}</span>
             </div>
           </div>
         </div>
@@ -170,10 +284,10 @@
           <p>Supervisión general del sistema de solicitudes académicas.</p>
         </div>
         <button class="btn-outline" (click)="goToSolicitudes()">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="3" width="18" height="18" rx="2"/>
-            <path d="M3 9h18M9 21V9"/>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" />
+            <path d="M3 9h18M9 21V9" />
           </svg>
           Ver todas las solicitudes
         </button>
@@ -183,97 +297,85 @@
         <div class="stat-card">
           <span class="stat-icon">📊</span>
           <span class="stat-label">Total</span>
-          <span class="stat-value">{{ loadingSolicitudes ? '—' : totalCount }}</span>
+          <span class="stat-value">{{ totalCount || '—' }}</span>
         </div>
         <div class="stat-card">
           <span class="stat-icon">📥</span>
           <span class="stat-label">Registradas</span>
-          <span class="stat-value accent-orange">{{ loadingSolicitudes ? '—' : registradasCount }}</span>
+          <span class="stat-value accent-orange">{{ registradasCount || '—' }}</span>
         </div>
         <div class="stat-card">
           <span class="stat-icon">🔄</span>
           <span class="stat-label">En atención</span>
-          <span class="stat-value accent-blue">{{ loadingSolicitudes ? '—' : enAtencionCount }}</span>
+          <span class="stat-value accent-blue">{{ enAtencionCount || '—' }}</span>
         </div>
         <div class="stat-card">
           <span class="stat-icon">✅</span>
           <span class="stat-label">Atendidas</span>
-          <span class="stat-value accent-green">{{ loadingSolicitudes ? '—' : atendidasCount }}</span>
+          <span class="stat-value accent-green">{{ atendidasCount || '—' }}</span>
         </div>
         <div class="stat-card">
           <span class="stat-icon">🚨</span>
           <span class="stat-label">Críticas</span>
-          <span class="stat-value accent-red">{{ loadingSolicitudes ? '—' : criticasCount }}</span>
+          <span class="stat-value accent-red">{{ criticasCount || '—' }}</span>
         </div>
       </div>
 
       <div class="two-col">
         <div class="section-card">
-          <div class="section-header"><h2>Acceso rápido</h2></div>
+          <div class="section-header">
+            <h2>Acceso rápido</h2>
+          </div>
           <div class="action-list">
-            <button class="action-item" (click)="goToSolicitudes()">
+            <button class="action-item action-item-primary" (click)="goToSolicitudes()">
               <span class="action-icon">📋</span>
               <div>
                 <span class="action-title">Todas las solicitudes</span>
-                <span class="action-sub">Vista global del sistema</span>
+                <span class="action-sub">{{ totalCount }} solicitudes en el sistema</span>
               </div>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af"
-                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="9 18 15 12 9 6"/>
+              <span class="action-badge">{{ totalCount }}</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6" />
               </svg>
             </button>
-            <button class="action-item" (click)="goToUsuarios()">
+            <button class="action-item action-item-secondary" (click)="goToUsuarios()">
               <span class="action-icon">👥</span>
               <div>
                 <span class="action-title">Gestión de usuarios</span>
                 <span class="action-sub">Administrar estudiantes y personal</span>
               </div>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af"
-                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="9 18 15 12 9 6"/>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6" />
               </svg>
             </button>
-            <button class="action-item" (click)="goToSolicitudes()">
+            <button class="action-item action-item-warning" (click)="goToSolicitudes()">
               <span class="action-icon">🚨</span>
               <div>
                 <span class="action-title">Solicitudes críticas</span>
-                <span class="action-sub">Requieren atención inmediata</span>
+                <span class="action-sub">{{ criticasCount }} requieren atención inmediata</span>
               </div>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af"
-                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="9 18 15 12 9 6"/>
+              <span class="action-badge action-badge-red">{{ criticasCount }}</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6" />
               </svg>
             </button>
           </div>
         </div>
 
         <div class="section-card">
-          <div class="section-header"><h2>Distribución por tipo</h2></div>
+          <div class="section-header">
+            <h2>Distribución por tipo</h2>
+          </div>
           <div class="tipo-list">
-            <div class="tipo-row">
-              <span class="tipo-nombre">Homologación</span>
-              <div class="tipo-bar-wrap"><div class="tipo-bar" style="width: 0%"></div></div>
-              <span class="tipo-count">—</span>
-            </div>
-            <div class="tipo-row">
-              <span class="tipo-nombre">Solicitud cupo</span>
-              <div class="tipo-bar-wrap"><div class="tipo-bar" style="width: 0%"></div></div>
-              <span class="tipo-count">—</span>
-            </div>
-            <div class="tipo-row">
-              <span class="tipo-nombre">Cancelación</span>
-              <div class="tipo-bar-wrap"><div class="tipo-bar" style="width: 0%"></div></div>
-              <span class="tipo-count">—</span>
-            </div>
-            <div class="tipo-row">
-              <span class="tipo-nombre">Registro asig.</span>
-              <div class="tipo-bar-wrap"><div class="tipo-bar" style="width: 0%"></div></div>
-              <span class="tipo-count">—</span>
-            </div>
-            <div class="tipo-row">
-              <span class="tipo-nombre">Consulta</span>
-              <div class="tipo-bar-wrap"><div class="tipo-bar" style="width: 0%"></div></div>
-              <span class="tipo-count">—</span>
+            <div class="tipo-row" *ngFor="let tipo of tiposDistribucion">
+              <span class="tipo-nombre">{{ tipo.nombre }}</span>
+              <div class="tipo-bar-wrap">
+                <div class="tipo-bar" [style.width.%]="tipo.porcentaje"></div>
+              </div>
+              <span class="tipo-count">{{ tipo.count }}</span>
             </div>
           </div>
         </div>
