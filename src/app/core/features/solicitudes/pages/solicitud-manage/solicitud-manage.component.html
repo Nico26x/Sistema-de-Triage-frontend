@@ -1,106 +1,214 @@
-<div>
-  <h1>Gestion de solicitudes</h1>
-  <p>Consulta todas las solicitudes registradas en el sistema.</p>
+<div class="gestion-container">
 
-  <div>
-    <button type="button" (click)="actualizar()" [disabled]="loading">
-      {{ loading ? 'Actualizando...' : 'Actualizar' }}
-    </button>
-    <button type="button" (click)="volverAlPanel()" [disabled]="loading">Volver al panel de solicitudes</button>
+  <!-- ===== Header ===== -->
+  <div class="page-header">
+    <div class="page-header-left">
+      <span class="page-eyebrow">Administrativo</span>
+      <h1>Gestión de solicitudes</h1>
+      <p>Consulta y administra todas las solicitudes registradas en el sistema.</p>
+    </div>
+    <div class="page-header-actions">
+      <button class="btn-outline" type="button" (click)="volverAlPanel()" [disabled]="loading">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+        Volver
+      </button>
+      <button class="btn-primary" type="button" (click)="actualizar()" [disabled]="loading">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 4 23 10 17 10"/>
+          <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+        </svg>
+        {{ loading ? 'Actualizando...' : 'Actualizar' }}
+      </button>
+    </div>
   </div>
 
-  <section>
-    <h2>Filtros</h2>
-
-    <div>
-      <label for="estado">Estado</label>
-      <select id="estado" name="estado" [(ngModel)]="filtros.estado">
-        <option value="">Todos los estados</option>
-        <option *ngFor="let estado of estados" [value]="estado">{{ estado }}</option>
-      </select>
+  <!-- ===== Filtros ===== -->
+  <div class="filters-card">
+    <div class="filters-header">
+      <span class="filters-title">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+        </svg>
+        Filtros
+      </span>
     </div>
 
-    <div>
-      <label for="prioridad">Prioridad</label>
-      <select id="prioridad" name="prioridad" [(ngModel)]="filtros.prioridad">
-        <option value="">Todas las prioridades</option>
-        <option *ngFor="let prioridad of prioridades" [value]="prioridad">{{ prioridad }}</option>
-      </select>
+    <div class="filters-grid">
+
+      <div class="field-group">
+        <label for="estado">Estado</label>
+        <div class="select-wrapper">
+          <select id="estado" name="estado" [(ngModel)]="filtros.estado">
+            <option value="">Todos los estados</option>
+            <option *ngFor="let estado of estados" [value]="estado">{{ estado }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label for="prioridad">Prioridad</label>
+        <div class="select-wrapper">
+          <select id="prioridad" name="prioridad" [(ngModel)]="filtros.prioridad">
+            <option value="">Todas las prioridades</option>
+            <option *ngFor="let prioridad of prioridades" [value]="prioridad">{{ prioridad }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label for="tipoSolicitud">Tipo de solicitud</label>
+        <div class="select-wrapper">
+          <select id="tipoSolicitud" name="tipoSolicitud" [(ngModel)]="filtros.tipoSolicitud">
+            <option value="">Todos los tipos</option>
+            <option *ngFor="let tipo of tipos" [value]="tipo">{{ tipo }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label for="canalOrigen">Canal</label>
+        <div class="select-wrapper">
+          <select id="canalOrigen" name="canalOrigen" [(ngModel)]="filtros.canalOrigen">
+            <option value="">Todos los canales</option>
+            <option *ngFor="let canal of canales" [value]="canal">{{ canal }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label for="responsableId">Responsable</label>
+        <div class="select-wrapper">
+          <select id="responsableId" name="responsableId" [(ngModel)]="filtros.responsableId">
+            <option value="">Todos los responsables</option>
+            <option *ngFor="let r of responsablesFiltrados" [value]="r.id">
+              {{ r.nombre }} — {{ r.rol }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label for="desde">Desde</label>
+        <input id="desde" name="desde" type="date" [(ngModel)]="filtros.desde" class="date-input"/>
+      </div>
+
+      <div class="field-group">
+        <label for="hasta">Hasta</label>
+        <input id="hasta" name="hasta" type="date" [(ngModel)]="filtros.hasta" class="date-input"/>
+      </div>
+
     </div>
 
-    <div>
-      <label for="tipoSolicitud">Tipo de solicitud</label>
-      <select id="tipoSolicitud" name="tipoSolicitud" [(ngModel)]="filtros.tipoSolicitud">
-        <option value="">Todos los tipos</option>
-        <option *ngFor="let tipo of tipos" [value]="tipo">{{ tipo }}</option>
-      </select>
+    <div class="filters-actions">
+      <button class="btn-primary" type="button" (click)="aplicarFiltros()" [disabled]="loading">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+        </svg>
+        Aplicar filtros
+      </button>
+      <button class="btn-ghost" type="button" (click)="limpiarFiltros()" [disabled]="loading">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+        Limpiar
+      </button>
     </div>
+  </div>
 
-    <div>
-      <label for="canalOrigen">Canal</label>
-      <select id="canalOrigen" name="canalOrigen" [(ngModel)]="filtros.canalOrigen">
-        <option value="">Todos los canales</option>
-        <option *ngFor="let canal of canales" [value]="canal">{{ canal }}</option>
-      </select>
-    </div>
-
-    <div>
-      <label for="responsableId">Responsable asignado</label>
-      <select id="responsableId" name="responsableId" [(ngModel)]="filtros.responsableId">
-        <option value="">Todos los responsables</option>
-        <option *ngFor="let responsable of responsablesFiltrados" [value]="responsable.id">
-          {{ responsable.nombre }} - {{ responsable.rol }}
-        </option>
-      </select>
-    </div>
-
-    <div>
-      <label for="desde">Desde</label>
-      <input id="desde" name="desde" type="date" [(ngModel)]="filtros.desde" />
-    </div>
-
-    <div>
-      <label for="hasta">Hasta</label>
-      <input id="hasta" name="hasta" type="date" [(ngModel)]="filtros.hasta" />
-    </div>
-
-    <div>
-      <button type="button" (click)="aplicarFiltros()" [disabled]="loading">Aplicar filtros</button>
-      <button type="button" (click)="limpiarFiltros()" [disabled]="loading">Limpiar filtros</button>
-    </div>
-  </section>
-
-  <section *ngIf="loading">
+  <!-- ===== Estados de carga/error/vacío ===== -->
+  <div class="state-card" *ngIf="loading">
+    <div class="spinner"></div>
     <p>Cargando solicitudes...</p>
-  </section>
+  </div>
 
-  <section *ngIf="!loading && error">
+  <div class="state-card state-error" *ngIf="!loading && error">
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/>
+      <circle cx="12" cy="16" r=".5" fill="#dc2626"/>
+    </svg>
     <p>{{ error }}</p>
-  </section>
+  </div>
 
-  <section *ngIf="!loading && !error && solicitudes.length === 0 && !filtrosAplicados">
-    <p>Aun no hay solicitudes registradas.</p>
-  </section>
+  <div class="state-card" *ngIf="!loading && !error && solicitudes.length === 0 && !filtrosAplicados">
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+      <polyline points="14 2 14 8 20 8"/>
+    </svg>
+    <p>Aún no hay solicitudes registradas.</p>
+  </div>
 
-  <section *ngIf="!loading && !error && solicitudes.length === 0 && filtrosAplicados">
+  <div class="state-card" *ngIf="!loading && !error && solicitudes.length === 0 && filtrosAplicados">
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
     <p>No se encontraron solicitudes con los filtros aplicados.</p>
-  </section>
+  </div>
 
-  <section *ngIf="!loading && !error && solicitudes.length > 0">
-    <article *ngFor="let solicitud of solicitudes; trackBy: trackBySolicitudId">
-      <p><strong>ID:</strong> {{ solicitud.id }}</p>
-      <p><strong>Descripcion:</strong> {{ solicitud.descripcion || 'Sin descripcion' }}</p>
-      <p><strong>Estado:</strong> {{ solicitud.estado || 'Sin estado' }}</p>
-      <p><strong>Prioridad:</strong> {{ solicitud.prioridad || 'Sin prioridad' }}</p>
-      <p><strong>Tipo de solicitud:</strong> {{ solicitud.tipoSolicitud || 'Sin tipo' }}</p>
-      <p><strong>Impacto:</strong> {{ solicitud.impacto || 'Sin impacto' }}</p>
-      <p><strong>Canal:</strong> {{ solicitud.canalOrigen || 'Sin canal' }}</p>
-      <p><strong>Solicitante:</strong> {{ solicitud.solicitante || 'Sin solicitante' }}</p>
-      <p><strong>Responsable:</strong> {{ solicitud.responsable || 'Sin responsable' }}</p>
-      <p><strong>Fecha registro:</strong> {{ solicitud.fechaRegistro || 'Sin fecha' }}</p>
-      <p><strong>Fecha limite:</strong> {{ solicitud.fechaLimite || 'No definida' }}</p>
-      <button type="button" (click)="verDetalle(solicitud.id)" [disabled]="loading">Ver detalle</button>
-      <hr />
-    </article>
-  </section>
+  <!-- ===== Tabla de solicitudes ===== -->
+  <div class="table-card" *ngIf="!loading && !error && solicitudes.length > 0">
+    <div class="table-header">
+      <h2>Solicitudes <span class="table-count">{{ solicitudes.length }}</span></h2>
+    </div>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Descripción</th>
+            <th>Tipo</th>
+            <th>Estado</th>
+            <th>Prioridad</th>
+            <th>Impacto</th>
+            <th>Canal</th>
+            <th>Solicitante</th>
+            <th>Responsable</th>
+            <th>F. Registro</th>
+            <th>F. Límite</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let s of solicitudes; trackBy: trackBySolicitudId">
+            <td class="td-id">{{ s.id }}</td>
+            <td class="td-desc">{{ s.descripcion || '—' }}</td>
+            <td class="td-tipo">{{ s.tipoSolicitud || '—' }}</td>
+            <td>
+              <span class="badge" [ngClass]="'estado-' + (s.estado | lowercase)">
+                {{ s.estado || '—' }}
+              </span>
+            </td>
+            <td>
+              <span class="badge" [ngClass]="'prioridad-' + (s.prioridad | lowercase)" *ngIf="s.prioridad; else dash">
+                {{ s.prioridad }}
+              </span>
+              <ng-template #dash>—</ng-template>
+            </td>
+            <td>
+              <span class="badge" [ngClass]="'impacto-' + (s.impacto | lowercase)" *ngIf="s.impacto; else dashI">
+                {{ s.impacto }}
+              </span>
+              <ng-template #dashI>—</ng-template>
+            </td>
+            <td class="td-secondary">{{ s.canalOrigen || '—' }}</td>
+            <td class="td-secondary">{{ s.solicitante || '—' }}</td>
+            <td class="td-secondary">{{ s.responsable || '—' }}</td>
+            <td class="td-date">{{ s.fechaRegistro || '—' }}</td>
+            <td class="td-date" [ngClass]="{'fecha-vencida': esFechaVencida(s.fechaLimite)}">
+              {{ s.fechaLimite || '—' }}
+            </td>
+            <td>
+              <button class="btn-icon" type="button" (click)="verDetalle(s.id)" [disabled]="loading" title="Ver detalle">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
 </div>
