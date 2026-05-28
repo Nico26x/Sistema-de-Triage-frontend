@@ -263,9 +263,60 @@ input:focus {
 .login-footer { margin-top: 18px; text-align: center; font-size: 0.72rem; color: #9ca3af; }
 
 /* ===== RESPONSIVE ===== */
-@media (max-width: 980px) {
-  .login-card { grid-template-columns: 1fr; max-width: 440px; }
+
+/* Tablets grandes (1024px) */
+@media (max-width: 1024px) {
+  .login-card {
+    max-width: 720px;
+  }
+}
+
+/* Tablets (768px) */
+@media (max-width: 768px) {
+  :host { padding: 16px; }
+
+  .login-card {
+    grid-template-columns: 1fr;
+    max-width: 480px;
+    border-radius: 18px;
+  }
+
   .login-left { display: none; }
-  .login-right { padding: 36px 28px; }
+
+  .login-right {
+    padding: 36px 28px;
+  }
+
   .login-title { font-size: 1.8rem; }
+}
+
+/* Móviles grandes (480px) */
+@media (max-width: 480px) {
+  :host { padding: 0; align-items: flex-end; }
+
+  .login-card {
+    max-width: 100%;
+    border-radius: 24px 24px 0 0;  /* ← efecto bottom sheet */
+    min-height: 85vh;
+  }
+
+  .login-right {
+    padding: 32px 20px 40px;
+    justify-content: flex-start;
+    padding-top: 40px;
+  }
+
+  .login-title { font-size: 1.6rem; }
+
+  input { height: 50px; font-size: 1rem; }
+
+  .btn-primary { height: 50px; font-size: 1rem; }
+
+  .btn-outline { height: 50px; font-size: 1rem; }
+}
+
+/* Móviles pequeños (360px) */
+@media (max-width: 360px) {
+  .login-right { padding: 28px 16px 36px; }
+  .login-title { font-size: 1.4rem; }
 }
